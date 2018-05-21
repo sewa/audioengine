@@ -36,16 +36,20 @@ channel.on("update", (payload) => {
     elem.position.value = elem._value.normalized;
     elem.render();
     osc.frequency.value = value * 500;
-    env.triggerAttack();
     break;
   case 'toggle':
     elem._state.flip(value);
     elem.render();
   case 'button':
-    // elem.position.x = value.x;
-    // elem.position.y = value.y;
-    // elem.state      = value.state;
-    // elem.render();
+    elem.position.x = value.x;
+    elem.position.y = value.y;
+    elem._state.flip(value.state);
+    elem.render();
+    if (value.state) {
+      env.triggerAttack();
+    } else {
+      env.triggerRelease();
+    }
   }
 });
 
