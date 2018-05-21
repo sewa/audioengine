@@ -4,8 +4,8 @@ defmodule AudioengineWeb.ClockControllerTest do
   test "GET /api/clock", %{conn: conn} do
     conn = get conn, "/api/clock"
     assert json_response(conn, 200) == %{
-      "time" => Audioengine.Core.Clock.get_time(),
-      "interval" => Audioengine.Core.Clock.get_interval()
+      "timestamp" => Audioengine.Core.Clock.get_timestamp(),
+      "bpm" => Audioengine.Core.Clock.get_bpm()
     }
   end
 end

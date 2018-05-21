@@ -3,8 +3,8 @@ defmodule Audioengine.Core.ClockTest do
 
   test "sets the specification" do
     assert Audioengine.Core.Clock.get() == %{
-      time: Audioengine.Core.Clock.get_time(),
-      interval: Audioengine.Core.Clock.get_interval(),
+      timestamp: Audioengine.Core.Clock.get_timestamp(),
+      bpm: Audioengine.Core.Clock.get_bpm(),
     }
   end
 end

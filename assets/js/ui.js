@@ -1,34 +1,32 @@
-import { Button, Toggle, Sequencer, Slider } from 'NexusUI'
-import {MonoSynth} from 'Tone'
+import { Button, Toggle, Sequencer, Slider } from 'NexusUI';
 
-const init = () => {
-
-  /*
-  const sequencer = new Sequencer('#sequencer',{
-   'size': [400,200],
-   'mode': 'toggle',
-   'rows': 5,
-   'columns': 10
-  })
-  */
-
-  
- //var sequencer = new Sequencer('#target');
-  const slider = new Slider('#slider');
-  const button = new Button('#button');
-  const toggle_0 = new Toggle('#toggle_0');
-  const toggle_1 = new Toggle('#toggle_1');
-  const toggle_2 = new Toggle('#toggle_2');
-  const toggle_3 = new Toggle('#toggle_3');
-
-  const monoSynth = new MonoSynth();
-
-  slider.on('change',function(v) {
-    console.log('slider: ' + v);
-  });
-
-}
+const elements = {
+  slider: {
+    elem: new Slider('#slider'),
+    type: 'slider'
+  },
+  button: {
+    elem: new Button('#button'),
+    type: 'button'
+  },
+  toggle_0: {
+    elem: new Toggle('#toggle_0'),
+    type: 'toggle'
+  },
+  toggle_1: {
+    elem: new Toggle('#toggle_1'),
+    type: 'toggle'
+  },
+  toggle_2: {
+    elem: new Toggle('#toggle_2'),
+    type: 'toggle'
+  },
+  toggle_3: {
+    elem: new Toggle('#toggle_3'),
+    type: 'toggle'
+  }
+};
 
 export {
-  init  
+  elements
 }

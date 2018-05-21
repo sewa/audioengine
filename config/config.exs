@@ -8,6 +8,7 @@ use Mix.Config
 # Configures the endpoint
 config :audioengine, AudioengineWeb.Endpoint,
   url: [host: "localhost"],
+  check_origin: false,
   secret_key_base: "X9Adl1etUMZlFJrmnuF+XWJjL4Awx/+ceY4L/8qVm074X6uvVTZw365VmjF3BAOa",
   render_errors: [view: AudioengineWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Audioengine.PubSub,
