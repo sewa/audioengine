@@ -12,7 +12,9 @@
   </head>
 
   <body>
-    <div id="app"></div>
+    <%= render @view_module, @view_template, assigns %>
     <%= {:safe, js_script_tag()} %>
+    
+
   </body>
 </html>
