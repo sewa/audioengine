@@ -39,10 +39,8 @@ channel.on("update", (payload) => {
     break;
   case 'toggle':
     elem._state.flip(value);
-    elem.render();
-  case 'sequencer':
-    
-    elem.render();
+    elem.render();    
+    break;
   case 'button':
     elem.position.x = value.x;
     elem.position.y = value.y;
@@ -53,6 +51,7 @@ channel.on("update", (payload) => {
     } else {
       env.triggerRelease();
     }
+    break;
   }
 });
 
