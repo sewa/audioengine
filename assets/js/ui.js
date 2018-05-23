@@ -13,6 +13,10 @@ const elements = {
     elem: new Toggle('#toggle_0'),
     type: 'toggle'
   },
+  sequencer: {
+    elem: new Sequencer('#sequencer'),
+    type: 'sequencer'
+  },
   toggle_1: {
     elem: new Toggle('#toggle_1'),
     type: 'toggle'
