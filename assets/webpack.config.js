@@ -64,6 +64,11 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin("css/app.css"),
+    new webpack.ProvidePlugin({
+        jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery'
+    })    
   //   // We copy our images and fonts to the output folder
   //   new CopyWebpackPlugin([{ from: "./assets/images", to: "images" }])
   ]

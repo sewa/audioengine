@@ -1,6 +1,6 @@
-import {Socket} from "phoenix";
+import { Socket } from "phoenix";
 import { elements as uiElements } from "./ui";
-import {OmniOscillator, AmplitudeEnvelope, Volume, Master, Distortion} from 'Tone';
+import { Tone, AudioContext, OmniOscillator, AmplitudeEnvelope, Volume, Master, Distortion} from 'Tone';
 
 const socket = new Socket("/socket");
 
@@ -21,7 +21,7 @@ for (const key in uiElements) {
 
 const dist = new Distortion().toMaster();
 const osc = new OmniOscillator("C#4", "pwm");
-osc.start();
+
 const env = new AmplitudeEnvelope();
 osc.connect(env);
 env.toMaster();
@@ -40,6 +40,9 @@ channel.on("update", (payload) => {
   case 'toggle':
     elem._state.flip(value);
     elem.render();
+  case 'sequencer':
+    
+    elem.render();
   case 'button':
     elem.position.x = value.x;
     elem.position.y = value.y;
@@ -50,6 +53,24 @@ channel.on("update", (payload) => {
     } else {
       env.triggerRelease();
     }
+  }
+});
+
+const Interface = {
+  isMobile : false
+};
+
+$(function(){
+  //mobile start
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    Interface.isMobile = true;
+    $("body").addClass("Mobile");
+    var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
+    var btn = $("<div>").attr("class", "button").text("Start").appendTo(element);  
+    $(btn).click(function() {
+      osc.start();
+      $(this).hide();
+    });
   }
 });
 

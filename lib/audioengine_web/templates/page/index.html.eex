@@ -1,9 +1,10 @@
-<div id="toggle_0"></div>
-<div id="toggle_1"></div>
-<div id="toggle_2"></div>
-<div id="toggle_3"></div>
+<div id="instrument">
+  <div id="toggle_0"></div>
+  <div id="toggle_1"></div>
+  <div id="toggle_2"></div>
+  <div id="toggle_3"></div>
 
-<div id="button"></div>
+  <div id="button"></div>
 
-<div id="slider"></div>
-<div id="target" nexus-ui="sequencer" style="width:400px;height:200px;"></div>
+  <div id="slider"></div>
+</div>
