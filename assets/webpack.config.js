@@ -65,7 +65,7 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin("css/app.css"),
     new webpack.ProvidePlugin({
-      Nexus: 'nexusUI',
+      Nexus: 'nexusui',
       jQuery: 'jquery',
       jquery: 'jquery',
       $: 'jquery'

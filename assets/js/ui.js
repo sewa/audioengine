@@ -1,5 +1,12 @@
 import { Button, Toggle, Sequencer, Slider } from 'NexusUI';
 
+var sequencer = new Sequencer('#sequencer',{
+  'size': [400,200],
+  'mode': 'toggle',
+  'rows': 5,
+  'columns': 8
+});
+
 const elements = {
   slider: {
     elem: new Slider('#slider'),
@@ -14,7 +21,7 @@ const elements = {
     type: 'toggle'
   },
   sequencer: {
-    elem: new Sequencer('#sequencer'),
+    elem: sequencer,
     type: 'sequencer'
   },
   toggle_1: {
@@ -33,5 +40,6 @@ const elements = {
 
 
 export {
-  elements
+  elements,
+  sequencer
 }

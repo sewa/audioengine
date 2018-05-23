@@ -1,6 +1,6 @@
 import { Socket } from "phoenix";
-import { elements as uiElements } from "./ui";
-import { Tone, AudioContext, OmniOscillator, AmplitudeEnvelope, Volume, Master, Distortion} from 'Tone';
+import { sequencer, elements as uiElements } from "./ui";
+import { AudioContext, OmniOscillator, AmplitudeEnvelope, Volume, Master, Distortion} from 'Tone';
 
 const socket = new Socket("/socket");
 
@@ -39,7 +39,7 @@ channel.on("update", (payload) => {
     break;
   case 'toggle':
     elem._state.flip(value);
-    elem.render();    
+    elem.render();
     break;
   case 'button':
     elem.position.x = value.x;
@@ -51,6 +51,10 @@ channel.on("update", (payload) => {
     } else {
       env.triggerRelease();
     }
+    break;
+  case 'sequencer':
+    elem.matrix.pattern[value.row][value.column] = value.state;
+    elem.update();
     break;
   }
 });
@@ -65,7 +69,7 @@ $(function(){
     Interface.isMobile = true;
     $("body").addClass("Mobile");
     var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
-    var btn = $("<div>").attr("class", "button").text("Start").appendTo(element);  
+    var btn = $("<div>").attr("class", "button").text("Start").appendTo(element);
     $(btn).click(function() {
       osc.start();
       $(this).hide();

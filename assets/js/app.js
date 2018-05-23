@@ -1,4 +1,5 @@
 import { init as initClock } from './clock';
-import socket from './control_channel';
+import './control_channel';
+import './sequence';
 
 initClock();

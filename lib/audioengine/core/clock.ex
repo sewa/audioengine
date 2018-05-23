@@ -2,7 +2,7 @@ defmodule Audioengine.Core.Clock do
   use Agent
 
   def start_link() do
-    state = %{ timestamp: DateTime.utc_now |> DateTime.to_unix(:millisecond), bpm: 80 }
+    state = %{ timestamp: DateTime.utc_now |> DateTime.to_unix(:millisecond), bpm: 60 }
     Agent.start_link(fn -> %{ state: state } end, name: __MODULE__)
   end
 
