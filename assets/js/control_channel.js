@@ -70,6 +70,8 @@ $(function(){
       osc.start();
       $(this).hide();
     });
+  } else {
+    osc.start();
   }
 });
 
