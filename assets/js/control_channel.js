@@ -1,6 +1,7 @@
 import { Socket } from "phoenix";
-import { sequencer, elements as uiElements } from "./ui";
 import { AudioContext, OmniOscillator, AmplitudeEnvelope, Volume, Master, Distortion} from 'Tone';
+import { sequencer, elements as uiElements } from "./ui";
+import { init as initClock } from './clock';
 
 const socket = new Socket("/socket");
 
@@ -71,10 +72,12 @@ $(function(){
     var element = $("<div>", {"id" : "MobileStart"}).appendTo("body");
     var btn = $("<div>").attr("class", "button").text("Start").appendTo(element);
     $(btn).click(function() {
+      initClock();
       osc.start();
       $(this).hide();
     });
   } else {
+    initClock();
     osc.start();
   }
 });

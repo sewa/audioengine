@@ -13,13 +13,13 @@ synth3.triggerAttack("C4");
 const synth4 = new PluckSynth({ resonance: 0.9 }).toMaster();
 synth4.triggerAttackRelease("G2", "8n");
 
-const loop = new Sequence(function(time, col){
+const loop = new Sequence((time, col) => {
   const column = sequencer.matrix.pattern[0][col];
+
+  sequencer.next();
 
   for (let i = 0; i < 4; i++){
     if (sequencer.matrix.pattern[i][col] === true){
-      //slightly randomized velocities
-      const vel = Math.random() * 0.5 + 0.5;
       switch(i) {
       case 0:
         synth1.triggerAttackRelease("C4", "64n", time);
