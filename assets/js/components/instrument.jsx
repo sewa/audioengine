@@ -2,65 +2,79 @@ import { h } from "hyperapp";
 import { Button, Toggle, Sequencer, Slider } from 'NexusUI';
 
 import { sequenceLoop } from '../tone';
+import { addNxInstance } from '../actions';
 
-const NxButton = ({ onUpdate, nxChange, nxOptions }) => (
+const NxButton = ({ key, nxChange, nxOptions }) => (
   <div
-    onupdate={ onUpdate }
-    oncreate={ (elem) => new Button(elem, nxOptions).on('change', nxChange) }>
-  </div>
-);
-
-const NxToggle = ({ onUpdate, nxChange, nxOptions }) => (
-  <div
-    onupdate={ onUpdate }
-    oncreate={ (elem) => new Toggle(elem, nxOptions).on('change', nxChange ) }>
-  </div>
-);
-
-const NxSequencer = ({ onUpdate, nxChange, nxOptions }) => (
-  <div
-    onupdate={ onUpdate }
     oncreate={ (elem) => {
-      const seq = new Sequencer(elem, nxOptions).on('change', nxChange);
-      const loop = sequenceLoop(seq);
-      loop.start();
-      return seq;
+      const instance = new Button(elem, nxOptions).on('change', (value) => {
+        nxChange({ value, key });
+      });
+      addNxInstance({ key, instance });
     } }>
   </div>
 );
 
-const NxSlider = ({ onUpdate, nxChange, nxOptions }) => (
+const NxToggle = ({ key, nxChange, nxOptions }) => (
   <div
-    onupdate={ onUpdate }
-    oncreate={ (elem) => new Slider(elem, nxOptions).on('change', nxChange) }>
+    oncreate={ (elem) => {
+      const instance = new Toggle(elem, nxOptions).on('change', (value) => {
+        nxChange({ value, key });
+      });
+      addNxInstance({ key, instance });
+    } }>
   </div>
 );
 
-const nxElementFromType = (item, actions) => {
+const NxSequencer = ({ key, nxChange, nxOptions }) => (
+  <div
+    oncreate={ (elem) => {
+      const instance = new Sequencer(elem, nxOptions).on('change', (value) => {
+        nxChange({ value, key });
+      });
+      const loop = sequenceLoop(instance);
+      loop.start();
+      addNxInstance({ key, instance });
+    } }>
+  </div>
+);
+
+const NxSlider = ({ key, nxChange, nxOptions }) => (
+  <div
+    oncreate={ (elem) => {
+      const instance = new Slider(elem, nxOptions).on('change', (value) => {
+        nxChange({ value, key });
+      });
+      addNxInstance({ key, instance });
+    } }>
+  </div>
+);
+
+const nxElementFromType = ({ key, item, actions }) => {
   switch(item.type) {
   case 'button':
     return NxButton({
-      onUpdate:  actions.receiveButtonChange,
-      nxChange:  actions.pushButtonChange,
+      key:       key,
+      nxChange:  actions.instruments.pushChange,
       nxOptions: item.options
     });
   case 'sequencer':
     return NxSequencer({
-      onUpdate:  actions.receiveSequencerChange,
-      nxChange:  actions.pushSequencerChange,
+      key:       key,
+      nxChange:  actions.instruments.pushChange,
       nxOptions: item.options
     });
     break;
   case 'slider':
     return NxSlider({
-      onUpdate:  actions.receiveSliderChange,
-      nxChange:  actions.pushSliderChange,
+      key:       key,
+      nxChange:  actions.instruments.pushChange,
       nxOptions: item.options
     });
   case 'toggle':
     return NxToggle({
-      onUpdate:  actions.receiveToggleChange,
-      nxChange:  actions.pushToggleChange,
+      key:       key,
+      nxChange:  actions.instruments.pushChange,
       nxOptions: item.options
     });
   default:
@@ -71,8 +85,12 @@ const nxElementFromType = (item, actions) => {
 export const view = (state, actions) => {
   return (
     <div>
-      {state.instruments.default.map((item) => (
-        nxElementFromType(item, actions)
+      {Object.keys(state.instruments.default).map((key) => (
+        nxElementFromType({
+          key: key,
+          item: state.instruments.default[key],
+          actions: actions
+        })
       ))}
     </div>
   );
