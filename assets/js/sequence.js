@@ -1,5 +1,13 @@
+import {
+  Synth,
+  DuoSynth,
+  MembraneSynth,
+  PluckSynth,
+  NoiseSynth,
+  Sequence
+} from 'Tone';
+
 import { sequencer } from "./ui";
-import { Synth, DuoSynth, MembraneSynth, PluckSynth, NoiseSynth, Sequence } from 'Tone';
 
 const synth1 = new DuoSynth().toMaster();
 synth1.triggerAttackRelease("C4", "16n");
