@@ -1,11 +1,26 @@
 import { h } from "hyperapp";
 import { Button, Toggle, Sequencer, Slider } from 'NexusUI';
 
-import { sequenceLoop } from '../tone';
-import { addNxInstance } from '../actions';
+import { sequenceLoop, env, osc }   from '../tone';
+import { addNxInstance, nxInstances }  from '../actions';
 
-const NxButton = ({ key, nxChange, nxOptions }) => (
+const NxButton = ({ state, key, nxChange, nxOptions }) => (
   <div
+    key={key}
+    onupdate = { (elem) => {
+      if (key !== state.currentChange.key) return;
+      const { value } = state.currentChange;
+      const nxInstance = nxInstances[key];
+      nxInstance.position.x = value.x;
+      nxInstance.position.y = value.y;
+      nxInstance._state.flip(value.state);
+      nxInstance.render();
+      if (value.state) {
+        env.triggerAttack();
+      } else {
+        env.triggerRelease();
+      }
+    }}
     oncreate={ (elem) => {
       const instance = new Button(elem, nxOptions).on('change', (value) => {
         nxChange({ value, key });
@@ -15,9 +30,17 @@ const NxButton = ({ key, nxChange, nxOptions }) => (
   </div>
 );
 
-const NxToggle = ({ key, nxChange, nxOptions }) => (
+const NxToggle = ({ state, key, nxChange, nxOptions }) => (
   <div
-    oncreate={ (elem) => {
+    key={key}
+    onupdate = { (elem) => {
+      if (key !== state.currentChange.key) return;
+      const { value } = state.currentChange;
+      const nxInstance = nxInstances[key];
+      nxInstance._state.flip(value);
+      nxInstance.render();
+    }}
+    oncreate = { (elem) => {
       const instance = new Toggle(elem, nxOptions).on('change', (value) => {
         nxChange({ value, key });
       });
@@ -26,8 +49,16 @@ const NxToggle = ({ key, nxChange, nxOptions }) => (
   </div>
 );
 
-const NxSequencer = ({ key, nxChange, nxOptions }) => (
+const NxSequencer = ({ state, key, nxChange, nxOptions }) => (
   <div
+    key={key}
+    onupdate = { (elem) => {
+      if (key !== state.currentChange.key) return;
+      const { value } = state.currentChange;
+      const nxInstance = nxInstances[key];
+      nxInstance.matrix.pattern[value.row][value.column] = value.state;
+      nxInstance.update();
+    }}
     oncreate={ (elem) => {
       const instance = new Sequencer(elem, nxOptions).on('change', (value) => {
         nxChange({ value, key });
@@ -39,8 +70,18 @@ const NxSequencer = ({ key, nxChange, nxOptions }) => (
   </div>
 );
 
-const NxSlider = ({ key, nxChange, nxOptions }) => (
+const NxSlider = ({ state, key, nxChange, nxOptions }) => (
   <div
+    key={key}
+    onupdate = { (elem) => {
+      if (key !== state.currentChange.key) return;
+      const { value } = state.currentChange;
+      const nxInstance = nxInstances[key];
+      nxInstance._value.update(value);
+      nxInstance.position.value = nxInstance._value.normalized;
+      nxInstance.render();
+      osc.frequency.value = value * 500;
+    }}
     oncreate={ (elem) => {
       const instance = new Slider(elem, nxOptions).on('change', (value) => {
         nxChange({ value, key });
@@ -50,31 +91,35 @@ const NxSlider = ({ key, nxChange, nxOptions }) => (
   </div>
 );
 
-const nxElementFromType = ({ key, item, actions }) => {
+const nxElementFromType = ({ state, key, item, actions }) => {
   switch(item.type) {
   case 'button':
     return NxButton({
+      state:     state,
       key:       key,
-      nxChange:  actions.instruments.pushChange,
+      nxChange:  actions.pushChange,
       nxOptions: item.options
     });
   case 'sequencer':
     return NxSequencer({
+      state:     state,
       key:       key,
-      nxChange:  actions.instruments.pushChange,
+      nxChange:  actions.pushChange,
       nxOptions: item.options
     });
     break;
   case 'slider':
     return NxSlider({
+      state:     state,
       key:       key,
-      nxChange:  actions.instruments.pushChange,
+      nxChange:  actions.pushChange,
       nxOptions: item.options
     });
   case 'toggle':
     return NxToggle({
+      state:     state,
       key:       key,
-      nxChange:  actions.instruments.pushChange,
+      nxChange:  actions.pushChange,
       nxOptions: item.options
     });
   default:
@@ -87,6 +132,7 @@ export const view = (state, actions) => {
     <div>
       {Object.keys(state.instruments.default).map((key) => (
         nxElementFromType({
+          state: state,
           key: key,
           item: state.instruments.default[key],
           actions: actions

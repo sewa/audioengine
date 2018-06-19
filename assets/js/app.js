@@ -1,13 +1,15 @@
 import { app } from "hyperapp";
 
-import { actions, state } from './actions';
+import { actions } from './actions';
+import { state } from './state';
 import { view } from './components/instrument';
-import { init as initClock } from './clock';
 import { osc } from './tone';
+import { init as initClock } from './clock';
 
 initClock();
 osc.start();
-app(state, actions, view, document.body);
+const main = app(state, actions, view, document.body);
+main.connect("control");
 
 // $(function(){
 //   //mobile start
