@@ -102,12 +102,10 @@ const nxElementFromType = ({ state, key, actions }) => {
   }
 };
 
-export const view = (state, actions) => {
-  return (
-    <div>
-      {Object.keys(state.instruments.default).map((key) => (
-        nxElementFromType({ state, key, actions })
-      ))}
-    </div>
-  );
-};
+export const view = (state, actions) => (
+  <div>
+    {Object.keys(state.instruments.default).map((key) => (
+      nxElementFromType({ state, key, actions })
+    ))}
+  </div>
+);
