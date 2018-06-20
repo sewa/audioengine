@@ -1,5 +1,7 @@
 const state = {
-  channels: {},
+  channels: {
+    control: {}
+  },
   nxInstances: {},
   // TODO: rename currentChange to channelUpdate
   currentChange: {},

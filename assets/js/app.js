@@ -6,7 +6,7 @@ import { view } from './views/instrument';
 
 const main = app(state, actions, view, document.body);
 main.initTone();
-main.connect("control");
+main.channels.connect("control");
 
 // $(function(){
 //   //mobile start

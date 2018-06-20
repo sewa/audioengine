@@ -6,8 +6,8 @@ import { sequenceLoop, env, osc }   from '../tone';
 const NxButton = ({ state, key, actions, nxOptions }) => (
   <div
     onupdate = { (elem) => {
-      if (key !== state.currentChange.key) return;
-      const { value } = state.currentChange;
+      if (key !== state.channels.control.key) return;
+      const { value } = state.channels.control;
       const nxInstance = state.nxInstances[key];
       nxInstance.position.x = value.x;
       nxInstance.position.y = value.y;
@@ -21,7 +21,7 @@ const NxButton = ({ state, key, actions, nxOptions }) => (
     }}
     oncreate={ (elem) => {
       const instance = new Button(elem, nxOptions).on('change', (value) => {
-        actions.pushChange({ value, key });
+        actions.channels.pushChange({ value, key });
       });
       actions.nxInstances.add({ key, instance });
     } }>
@@ -31,15 +31,15 @@ const NxButton = ({ state, key, actions, nxOptions }) => (
 const NxToggle = ({ state, key, actions, nxOptions }) => (
   <div
     onupdate = { (elem) => {
-      if (key !== state.currentChange.key) return;
-      const { value } = state.currentChange;
+      if (key !== state.channels.control.key) return;
+      const { value } = state.channels.control;
       const nxInstance = state.nxInstances[key];
       nxInstance._state.flip(value);
       nxInstance.render();
     }}
     oncreate = { (elem) => {
       const instance = new Toggle(elem, nxOptions).on('change', (value) => {
-        actions.pushChange({ value, key });
+        actions.channels.pushChange({ value, key });
       });
       actions.nxInstances.add({ key, instance });
     } }>
@@ -49,15 +49,15 @@ const NxToggle = ({ state, key, actions, nxOptions }) => (
 const NxSequencer = ({ state, key, actions, nxOptions }) => (
   <div
     onupdate = { (elem) => {
-      if (key !== state.currentChange.key) return;
-      const { value } = state.currentChange;
+      if (key !== state.channels.control.key) return;
+      const { value } = state.channels.control;
       const nxInstance = state.nxInstances[key];
       nxInstance.matrix.pattern[value.row][value.column] = value.state;
       nxInstance.update();
     }}
     oncreate={ (elem) => {
       const instance = new Sequencer(elem, nxOptions).on('change', (value) => {
-        actions.pushChange({ value, key });
+        actions.channels.pushChange({ value, key });
       });
       const loop = sequenceLoop(instance);
       loop.start();
@@ -69,8 +69,8 @@ const NxSequencer = ({ state, key, actions, nxOptions }) => (
 const NxSlider = ({ state, key, actions, nxOptions }) => (
   <div
     onupdate = { (elem) => {
-      if (key !== state.currentChange.key) return;
-      const { value } = state.currentChange;
+      if (key !== state.channels.control.key) return;
+      const { value } = state.channels.control;
       const nxInstance = state.nxInstances[key];
       nxInstance._value.update(value);
       nxInstance.position.value = nxInstance._value.normalized;
@@ -79,7 +79,7 @@ const NxSlider = ({ state, key, actions, nxOptions }) => (
     }}
     oncreate={ (elem) => {
       const instance = new Slider(elem, nxOptions).on('change', (value) => {
-        actions.pushChange({ value, key });
+        actions.channels.pushChange({ value, key });
       });
       actions.nxInstances.add({ key, instance });
     } }>

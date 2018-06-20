@@ -8,28 +8,30 @@ const actions = {
       initTone(xhr.response);
     });
   },
-  connect: name => (state, actions) => {
-    const socket = new Socket("/socket");
-    socket.connect();
-
-    const channel = socket.channel(`channel:${name}`, {});
-
-    channel.join().receive("ok", resp => {
-      actions.channels.connected({ name, channel });
-    });
-
-    channel.on("update", ({ body: { key, value } }) => {
-      actions.receiveChange({ key, value });
-    });
-  },
-  pushChange: item => state => {
-    state.channels.control.push("update", { body: { key: item.key, value: item.value }});
-  },
-
-  // state updates
   channels: {
+    connect: name => (state, actions) => {
+      const socket = new Socket("/socket");
+      socket.connect();
+
+      const channel = socket.channel(`channel:${name}`, {});
+
+      channel.join().receive("ok", resp => {
+        actions.connected({ name, channel });
+      });
+
+      channel.on("update", ({ body: { key, value } }) => {
+        actions.receiveChange({ name, channel, key, value });
+      });
+    },
+    pushChange: ({ key, value }) => ({ control: { channel } }) => {
+      channel.push("update", { body: { key, value }});
+    },
+    // state updates
     connected: ({ name, channel }) => state => (
-      { [name]: channel }
+      { [name]: { channel } }
+    ),
+    receiveChange: ({ name, channel, key, value }) => state => (
+      { [name]: { channel, key, value } }
     )
   },
   nxInstances: {
@@ -37,9 +39,6 @@ const actions = {
       { [key]: instance }
     )
   },
-  receiveChange: item => state => (
-    { currentChange: item }
-  )
 };
 
 export {

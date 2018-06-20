@@ -13,6 +13,7 @@ const osc = new OmniOscillator("C#4", "pwm");
 const env = new AmplitudeEnvelope();
 
 osc.connect(env);
+osc.start();
 env.toMaster();
 
 const synth1 = new DuoSynth().toMaster();
@@ -61,8 +62,6 @@ const initTone = ({ timestamp, bpm }) => {
   const diff        = nowUnix - timestamp;
   const error       = diff % interval_ms;
   const offset      = interval_ms - error;
-
-  osc.start();
 
   window.setTimeout(() => {
     Transport.start();
