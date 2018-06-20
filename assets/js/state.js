@@ -3,8 +3,6 @@ const state = {
     control: {}
   },
   nxInstances: {},
-  // TODO: rename currentChange to channelUpdate
-  currentChange: {},
   instruments: {
     default: {
       toggle1: {
