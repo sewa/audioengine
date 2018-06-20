@@ -1,6 +1,13 @@
 import { Socket } from "phoenix";
+import { get } from './service';
+import { initTone } from './tone';
 
 const actions = {
+  initTone: state => {
+    get('clock').subscribe((xhr) => {
+      initTone(xhr.response);
+    });
+  },
   connect: name => (state, actions) => {
     const socket = new Socket("/socket");
     socket.connect();

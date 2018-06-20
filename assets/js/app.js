@@ -2,13 +2,12 @@ import { app } from "hyperapp";
 
 import { actions } from './actions';
 import { state } from './state';
-import { view } from './components/instrument';
+import { view } from './views/instrument';
 import { osc } from './tone';
-import { init as initClock } from './clock';
 
-initClock();
 osc.start();
 const main = app(state, actions, view, document.body);
+main.initTone();
 main.connect("control");
 
 // $(function(){

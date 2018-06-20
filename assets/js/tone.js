@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   DuoSynth,
   MembraneSynth,
@@ -5,6 +6,7 @@ import {
   Sequence,
   OmniOscillator,
   AmplitudeEnvelope,
+  Transport
 } from 'Tone';
 
 const osc = new OmniOscillator("C#4", "pwm");
@@ -53,8 +55,23 @@ const sequenceLoop = (sequencer) => {
   return seq;
 };
 
+const initTone = ({ timestamp, bpm }) => {
+  const nowUnix     = moment().format('x');
+  const interval_ms = 60000 / bpm;
+  const diff        = nowUnix - timestamp;
+  const error       = diff % interval_ms;
+  const offset      = interval_ms - error;
+
+  window.setTimeout(() => {
+    Transport.start();
+  }, offset);
+
+  Transport.bpm.value = bpm;
+};
+
 export {
   osc,
   env,
-  sequenceLoop
+  sequenceLoop,
+  initTone
 }
