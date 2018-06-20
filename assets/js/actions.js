@@ -1,10 +1,5 @@
 import { Socket } from "phoenix";
 
-let nxInstances = {};
-const addNxInstance = ({ key, instance }) => {
-  nxInstances[key] = instance;
-};
-
 const actions = {
   connect: name => (state, actions) => {
     const socket = new Socket("/socket");
@@ -13,30 +8,33 @@ const actions = {
     const channel = socket.channel(`channel:${name}`, {});
 
     channel.join().receive("ok", resp => {
-      actions.connected({ name, channel });
+      actions.channels.connected({ name, channel });
     });
 
-    channel.on("update", (payload) => {
-      const { body: { key, value } } = payload;
+    channel.on("update", ({ body: { key, value } }) => {
       actions.receiveChange({ key, value });
     });
-    // nothing is returned, no state update. it is preformed in connected.
-  },
-  connected: ({ name, channel }) => state => {
-    state.channels[name] = channel;
-    return state;
   },
   pushChange: item => state => {
     state.channels.control.push("update", { body: { key: item.key, value: item.value }});
-    // nothing is returned, no state update
   },
-  receiveChange: item => state => {
-    return { currentChange: item };
-  }
+
+  // state updates
+  channels: {
+    connected: ({ name, channel }) => state => (
+      { [name]: channel }
+    )
+  },
+  nxInstances: {
+    add: ({ key, instance }) => state => (
+      { [key]: instance }
+    )
+  },
+  receiveChange: item => state => (
+    { currentChange: item }
+  )
 };
 
 export {
-  addNxInstance,
-  nxInstances,
   actions
 };

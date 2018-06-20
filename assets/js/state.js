@@ -1,5 +1,7 @@
 const state = {
   channels: {},
+  nxInstances: {},
+  currentChange: {},
   instruments: {
     default: {
       toggle1: {
