@@ -3,9 +3,7 @@ import { app } from "hyperapp";
 import { actions } from './actions';
 import { state } from './state';
 import { view } from './views/instrument';
-import { osc } from './tone';
 
-osc.start();
 const main = app(state, actions, view, document.body);
 main.initTone();
 main.connect("control");

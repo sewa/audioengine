@@ -62,6 +62,8 @@ const initTone = ({ timestamp, bpm }) => {
   const error       = diff % interval_ms;
   const offset      = interval_ms - error;
 
+  osc.start();
+
   window.setTimeout(() => {
     Transport.start();
   }, offset);
