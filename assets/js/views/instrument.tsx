@@ -59,8 +59,7 @@ const NxSequencer = ({ state, key, actions, nxOptions }) => (
       const instance = new Sequencer(elem, nxOptions).on('change', (value) => {
         actions.channels.pushChange({ value, key });
       });
-      const loop = sequenceLoop(instance);
-      loop.start();
+      sequenceLoop(instance).start();
       actions.nxInstances.add({ key, instance });
     } }>
   </div>

@@ -17,9 +17,9 @@ const destDir = path.join(__dirname, "../priv/static");
 const publicPath = "/";
 
 module.exports = {
-  devtool: "source-map",
+  devtool: 'inline-source-map',
   mode: 'development',
-  entry: [staticDir + "/js/app.js", staticDir + "/css/app.scss"],
+  entry: [staticDir + "/js/app.ts", staticDir + "/css/app.scss"],
   output: {
     path: destDir,
     filename: "js/app.js",
@@ -28,15 +28,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js|\.jsx$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['env'],
-            plugins: [["transform-react-jsx", { "pragma": "h" }]]
-          },
-        }
+        test: /\.ts|\.tsx$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
       },
       {
         test: /\.scss$/,
@@ -61,15 +55,12 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx']
+    extensions: ['*', '.ts', '.tsx', '.js']
   },
   plugins: [
     new ExtractTextPlugin("css/app.css"),
     new webpack.ProvidePlugin({
-      Nexus: 'nexusui',
-      jQuery: 'jquery',
-      jquery: 'jquery',
-      $: 'jquery'
+      Nexus: 'nexusui'
     })
     //   // We copy our images and fonts to the output folder
     //   new CopyWebpackPlugin([{ from: "./assets/images", to: "images" }])

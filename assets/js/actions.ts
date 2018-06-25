@@ -1,4 +1,4 @@
-import { Socket } from "phoenix";
+import { Socket } from 'phoenix';
 import { get } from './service';
 import { initTone } from './tone';
 

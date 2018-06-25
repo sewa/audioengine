@@ -1,4 +1,12 @@
-const state = {
+interface State {
+  channels: {
+    control: {}
+  },
+  nxInstances: {},
+  instruments: {}
+}
+
+const state:State = {
   channels: {
     control: {}
   },
