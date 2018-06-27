@@ -1,12 +1,17 @@
-import { app } from "hyperapp";
+import { app } from 'hyperapp'
+import { Socket } from 'phoenix'
 
-import { actions } from './actions';
-import { state } from './state';
-import { view } from './views/instrument';
+import { actions } from './actions'
+import { createState } from './state'
+import { view } from './views/instrument'
 
-const main = app(state, actions, view, document.body);
+const socket = new Socket("/socket")
+socket.connect()
+
+const state = createState(socket)
+const main = app(state, actions, view, document.body)
 main.initTone();
-main.channels.connect("control");
+main.channels.connect("control")
 
 // $(function(){
 //   //mobile start

@@ -7,10 +7,8 @@ import {
   OmniOscillator,
   AmplitudeEnvelope,
   Transport,
-  Distortion
 } from 'Tone';
 
-const dist = new Distortion().toMaster();
 const osc = new OmniOscillator("C#4", "pwm");
 const env = new AmplitudeEnvelope();
 
@@ -28,8 +26,6 @@ synth4.triggerAttackRelease("G2", "8n");
 
 const sequenceLoop = (sequencer) => {
   const seq = new Sequence((time, col) => {
-    const column = sequencer.matrix.pattern[0][col];
-
     sequencer.next();
 
     for (let i = 0; i < 4; i++){
