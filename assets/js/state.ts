@@ -98,6 +98,21 @@ const instruments:InstrumentsStateType = [
         }
       },
     ]
+  },
+  {
+    name: 'test',
+    widgets: [
+      {
+        key: 'sequencer2',
+        type: 'sequencer',
+        nxOptions: {
+          size: [400,200],
+          mode: 'toggle',
+          rows: 5,
+          columns: 8
+        }
+      },
+    ]
   }
 ]
 

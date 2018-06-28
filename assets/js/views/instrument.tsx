@@ -129,14 +129,20 @@ type InstrumentProps = {
   state:      StateType
 }
 const Instrument = ({ actions, state, instrument }:InstrumentProps) => (
-  <div>
-    <h2>
-      { name }
-    </h2>
+  <fieldset style={{
+    border: '1px solid #ccc',
+    float:  'left'
+  }}>
+    <legend style={{
+      fontFamily: 'monospace',
+      textTransform: 'uppercase'
+    }}>
+      { instrument.name }
+    </legend>
     { instrument.widgets.map((widget) => (
       nxElementFromType({ actions, state, widget })
     )) }
-  </div>
+  </fieldset>
 )
 
 export const view = (state:StateType, actions:ActionsType) => (
