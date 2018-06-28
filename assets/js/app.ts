@@ -1,15 +1,15 @@
 import { app } from 'hyperapp'
 import { Socket } from 'phoenix'
 
-import { actions } from './actions'
-import { createState } from './state'
+import { actions, ActionsType } from './actions'
+import { createState, StateType } from './state'
 import { view } from './views/instrument'
 
 const socket = new Socket("/socket")
 socket.connect()
 
 const state = createState(socket)
-const main = app(state, actions, view, document.body)
+const main = app<StateType, ActionsType>(state, actions, view, document.body)
 main.initTone();
 main.channels.connect("control")
 

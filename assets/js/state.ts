@@ -1,24 +1,41 @@
 import { Channel, Socket } from 'phoenix'
 
 export type NxButtonUpdateProps = {
-  x: number
-  y: number
-  state: boolean
+  kind: 'button'
+  value: {
+    x: number
+    y: number
+    state: boolean
+  }
 }
-export type NxSliderUpdateProps = number
+export type NxSliderUpdateProps = {
+  kind: 'slider'
+  value: number
+}
 export type NxSequencerUpdateProps = {
-  column: number
-  row:    number
-  state:  boolean
+  kind: 'sequencer'
+  value: {
+    column: number
+    row:    number
+    state:  boolean
+  }
 }
-export type NxToggleUpdateProps = boolean
+export type NxToggleUpdateProps = {
+  kind: 'toggle'
+  value: boolean
+}
+export type NxBlankUpdateProps = {
+  kind: 'blank'
+  value: -1
+}
+export type NxUpdateProps = NxButtonUpdateProps | NxSliderUpdateProps | NxSequencerUpdateProps | NxToggleUpdateProps | NxBlankUpdateProps
 
 export type ChannelStateType = {
   control: {
     channel: Channel
     update: {
-      key:   string
-      value: {}
+      elemKey:   string
+      elemState: NxUpdateProps
     }
   }
 }
@@ -90,8 +107,11 @@ const createState = (socket:Socket):StateType => (
       control: {
         channel: socket.channel(`channel:control`, {}),
         update: {
-          key: '',
-          value: {}
+          elemKey: '',
+          elemState: {
+            kind: 'blank',
+            value: -1
+          } as NxBlankUpdateProps
         }
       },
     },

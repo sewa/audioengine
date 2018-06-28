@@ -1,11 +1,12 @@
 import { Channel } from 'phoenix'
+import { ActionResult } from 'hyperapp';
 import { get } from './service';
 import { initTone } from './tone';
-import { StateType, ChannelStateType } from './state';
+import { StateType, ChannelStateType, NxUpdateProps } from './state';
 
 type ChannelPushProps = {
-  key: string,
-  value: {}
+  elemKey: string
+  elemState: NxUpdateProps
 }
 
 type ChannelConnectProps = {
@@ -14,17 +15,18 @@ type ChannelConnectProps = {
   channel: Channel
 }
 
-type ChannelReceiveProps = ChannelPushProps & ChannelConnectProps
+type ChannelReceiveProps = {
+  name:     string
+  channel:  Channel
+  elemKey:  string
+  elemState: NxUpdateProps
+}
 
 type ChannelActionsType = {
-  connect(name: string): void
-  pushChange(ChannelChange): void
-  connected(ChanelConnect): {
-    [key:string]: any
-  },
-  receiveChange(ChannelReceive): {
-    [key:string]: any
-  }
+  connect:       (name: string) => (state: StateType) => void
+  connected:     ({ name, channel, update }:ChannelConnectProps) => (state: StateType) => ActionResult<StateType>
+  pushChange:    ({ elemKey, elemState }:ChannelPushProps)  => (state: StateType) => void
+  receiveChange: ({ name, channel, elemKey, elemState }:ChannelReceiveProps) => (state: StateType) => ActionResult<StateType>
 }
 
 type nxInstancesActionsType = {
@@ -34,7 +36,7 @@ type nxInstancesActionsType = {
 }
 
 export type ActionsType = {
-  initTone(): void
+  initTone: () => void
   channels: ChannelActionsType
   nxInstances: nxInstancesActionsType
 }
@@ -52,19 +54,32 @@ const actions:hyperapp.ActionsType<StateType, ActionsType> = {
         actions.connected({ name, channel, update })
       })
 
-      channel.on("update", ({ body: { key, value } }) => {
-        actions.receiveChange({ name, channel, key, value })
+      channel.on("update", ({ body: { elemKey, elemState } }) => {
+        actions.receiveChange({ name, channel, elemKey, elemState })
       })
     },
-    pushChange: ({ key, value }:ChannelPushProps) => (state:ChannelStateType) => {
-      const { control: { channel } } = state
-      channel.push("update", { body: { key, value }})
-    },
     connected: ({ name, channel, update }:ChannelConnectProps) => (state:ChannelStateType) => (
-      { [name]: { channel, update } }
+      {
+        [name]: {
+          channel,
+          update
+        }
+      }
     ),
-    receiveChange: ({ name, channel, key, value }:ChannelReceiveProps) => (state:ChannelStateType) => (
-      { [name]: { channel, update: { key, value } } }
+    pushChange: ({ elemKey, elemState }:ChannelPushProps) => (state:ChannelStateType):void => {
+      const { control: { channel } } = state
+      channel.push("update", { body: { elemKey, elemState } })
+    },
+    receiveChange: ({ name, channel, elemKey, elemState }:ChannelReceiveProps) => (state:ChannelStateType) => (
+      {
+        [name]: {
+          channel,
+          update: {
+            elemKey,
+            elemState
+          }
+        }
+      }
     )
   },
   nxInstances: {
