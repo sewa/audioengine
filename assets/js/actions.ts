@@ -11,8 +11,11 @@ type ChannelPushProps = {
 
 type ChannelConnectProps = {
   name:    string
-  update:  {}
   channel: Channel
+  update: {
+    elemKey:   string
+    elemState: NxUpdateProps
+  }
 }
 
 type ChannelReceiveProps = {
@@ -58,7 +61,7 @@ const actions:hyperapp.ActionsType<StateType, ActionsType> = {
         actions.receiveChange({ name, channel, elemKey, elemState })
       })
     },
-    connected: ({ name, channel, update }:ChannelConnectProps) => (state:ChannelStateType) => (
+    connected: ({ name, channel, update }:ChannelConnectProps) => (state:ChannelStateType):ChannelStateType => (
       {
         [name]: {
           channel,
@@ -70,7 +73,7 @@ const actions:hyperapp.ActionsType<StateType, ActionsType> = {
       const { control: { channel } } = state
       channel.push("update", { body: { elemKey, elemState } })
     },
-    receiveChange: ({ name, channel, elemKey, elemState }:ChannelReceiveProps) => (state:ChannelStateType) => (
+    receiveChange: ({ name, channel, elemKey, elemState }:ChannelReceiveProps) => (state:ChannelStateType):ChannelStateType => (
       {
         [name]: {
           channel,

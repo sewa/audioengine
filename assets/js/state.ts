@@ -31,7 +31,7 @@ export type NxBlankUpdateProps = {
 export type NxUpdateProps = NxButtonUpdateProps | NxSliderUpdateProps | NxSequencerUpdateProps | NxToggleUpdateProps | NxBlankUpdateProps
 
 export type ChannelStateType = {
-  control: {
+  [index:string]: {
     channel: Channel
     update: {
       elemKey:   string
