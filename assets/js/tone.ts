@@ -24,12 +24,12 @@ synth3.triggerAttack("C4");
 const synth4 = new PluckSynth({ resonance: 0.9 }).toMaster();
 synth4.triggerAttackRelease("G2", "8n");
 
-const sequenceLoop = (sequencer) => {
+const sequenceLoop = ({ instance, nxOptions }) => {
   const seq = new Sequence((time, col) => {
-    sequencer.next();
+    instance.next();
 
     for (let i = 0; i < 4; i++){
-      if (sequencer.matrix.pattern[i][col] === true){
+      if (instance.matrix.pattern[i][col] === true){
         switch(i) {
         case 0:
           synth1.triggerAttackRelease("C4", "64n", time);

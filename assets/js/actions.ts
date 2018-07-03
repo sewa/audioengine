@@ -2,11 +2,11 @@ import { Channel } from 'phoenix'
 import { ActionResult } from 'hyperapp';
 import { get } from './service';
 import { initTone } from './tone';
-import { StateType, ChannelStateType, NxUpdateProps } from './state';
+import { StateType, ChannelStateType, NxUpdate } from './state';
 
 type ChannelPushProps = {
   elemKey: string
-  elemState: NxUpdateProps
+  elemState: NxUpdate
 }
 
 type ChannelConnectProps = {
@@ -14,7 +14,7 @@ type ChannelConnectProps = {
   channel: Channel
   update: {
     elemKey:   string
-    elemState: NxUpdateProps
+    elemState: NxUpdate
   }
 }
 
@@ -22,7 +22,7 @@ type ChannelReceiveProps = {
   name:     string
   channel:  Channel
   elemKey:  string
-  elemState: NxUpdateProps
+  elemState: NxUpdate
 }
 
 type ChannelActionsType = {
