@@ -1,5 +1,6 @@
 import { Channel } from 'phoenix'
 import { ActionResult } from 'hyperapp';
+import { create as timesync_create } from 'timesync'
 import { get } from './service';
 import { initTone } from './tone';
 import { StateType, ChannelStateType, NxUpdate } from './state';
@@ -46,8 +47,16 @@ export type ActionsType = {
 
 const actions:hyperapp.ActionsType<StateType, ActionsType> = {
   initTone: ():void => {
-    get('clock').subscribe((xhr) => {
-      initTone(xhr.response);
+    const ts = timesync_create({
+      server: '/api/timesync',
+      interval: null
+    });
+    ts.sync()
+    ts.on('sync', (args) => {
+      get('clock').subscribe((xhr) => {
+        const { timestamp, bpm } = xhr.response
+        initTone({ timestamp, bpm, nowUnix: ts.now() })
+      });
     });
   },
   channels: {

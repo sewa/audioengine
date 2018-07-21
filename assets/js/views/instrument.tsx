@@ -13,7 +13,7 @@ import {
   NxSliderUpdate
 } from '../state'
 
-const onUpdate = ({ state, key, callback }: { state:StateType, key:string, callback:Function }) => {
+const onUpdate = ({ state, key, callback }: { state:StateType, key:string, callback:Function}) => {
   const { elemKey, elemState } = state.channels.control.update
   if (key !== elemKey) return
   const nxInstance = state.nxInstances[key]

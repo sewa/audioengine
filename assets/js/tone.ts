@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import {
   DuoSynth,
   MembraneSynth,
@@ -11,6 +10,9 @@ import {
 
 const osc = new OmniOscillator("C#4", "pwm");
 const env = new AmplitudeEnvelope();
+osc.connect(env);
+env.toMaster();
+osc.start();
 
 const synth1 = new DuoSynth().toMaster();
 synth1.triggerAttackRelease("C4", "16n");
@@ -50,17 +52,13 @@ const sequenceLoop = ({ instance, nxOptions }) => {
   return seq;
 };
 
-const initTone = ({ timestamp, bpm }) => {
-  const nowUnix     = moment().unix();
+const initTone = ({ timestamp, bpm, nowUnix }) => {
   const interval_ms = 60000 / bpm;
   const diff        = nowUnix - timestamp;
   const error       = diff % interval_ms;
   const offset      = interval_ms - error;
 
   window.setTimeout(() => {
-    osc.connect(env);
-    env.toMaster();
-    osc.start();
     Transport.bpm.value = bpm;
     Transport.start();
   }, offset);
