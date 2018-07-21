@@ -3,7 +3,7 @@ import { Socket } from 'phoenix'
 
 import { actions, ActionsType } from './actions'
 import { createState, StateType } from './state'
-import { view } from './views/instrument'
+import { view } from './views/layout'
 
 const socket = new Socket("/socket")
 socket.connect()

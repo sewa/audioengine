@@ -43,8 +43,8 @@ export type ActionsType = {
   initTone: () => void
   channels: ChannelActionsType
   nxInstances: nxInstancesActionsType
+  toggleViewType: () => string
 }
-
 const actions:hyperapp.ActionsType<StateType, ActionsType> = {
   initTone: ():void => {
     const ts = timesync_create({
@@ -99,6 +99,10 @@ const actions:hyperapp.ActionsType<StateType, ActionsType> = {
       { [key]: instance }
     )
   },
+  toggleViewType: () => (state:StateType) => {
+    const viewType = state.viewType == 'edit' ? 'live' : 'edit'
+    return { viewType }
+  }
 };
 
 export {

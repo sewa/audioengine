@@ -6,11 +6,11 @@ import { ActionsType } from '../actions'
 import {
   StateType,
   InstrumentWidgetStateType,
-  InstrumentStateType,
   NxButtonUpdate,
   NxToggleUpdate,
   NxSequencerUpdate,
-  NxSliderUpdate
+  NxSliderUpdate,
+  InstrumentStateType
 } from '../state'
 
 const onUpdate = ({ state, key, callback }: { state:StateType, key:string, callback:Function}) => {
@@ -142,32 +142,53 @@ const nxElementFromType = ({ actions, state, widget }:BuildNxElemProps) => {
   }
 }
 
+type InstrumentTypeProps = {
+  actions: ActionsType
+  state:   StateType
+  widget:  InstrumentWidgetStateType
+  display: boolean
+}
+const InstrumentTypeView = ({ actions, state, widget, display }:InstrumentTypeProps) => (
+  <div style={{ display: display ? 'block' : 'none' }}>
+    { nxElementFromType({ actions, state, widget }) }
+  </div>
+)
+
 type InstrumentProps = {
   actions:    ActionsType
-  instrument: InstrumentStateType
   state:      StateType
+  instrument: InstrumentStateType
 }
 const Instrument = ({ actions, state, instrument }:InstrumentProps) => (
-  <fieldset style={{
-    border: '1px solid #ccc',
-    float:  'left'
-  }}>
-    <legend style={{
-      fontFamily: 'monospace',
-      textTransform: 'uppercase'
-    }}>
+  <fieldset>
+    <legend>
       { instrument.name }
     </legend>
-    { instrument.widgets.map((widget) => (
-      nxElementFromType({ actions, state, widget })
-    )) }
+    {
+      InstrumentTypeView({
+        actions,
+        state,
+        widget: instrument.edit_view,
+        display: state.viewType == 'edit'
+      })
+    }
+    {
+      InstrumentTypeView({
+        actions,
+        state,
+        widget: instrument.live_view,
+        display: state.viewType == 'live'
+      })
+    }
   </fieldset>
 )
 
 export const view = (state:StateType, actions:ActionsType) => (
   <div>
-    {state.instruments.map((instrument) => (
-       Instrument({ state, actions, instrument })
-    ))}
+    {state.instruments.map((instrument) => {
+      return [
+        Instrument({ actions, state, instrument }),
+      ]
+    })}
   </div>
 )

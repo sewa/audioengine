@@ -30,77 +30,58 @@ export type InstrumentWidgetStateType = {
   type: string
   nxOptions: {}
 }
-export type InstrumentWidgetsStateType = Array<InstrumentWidgetStateType>
 
 export type InstrumentStateType = {
-  name: string,
-  widgets: InstrumentWidgetsStateType
+  name: string
+  edit_view: InstrumentWidgetStateType
+  live_view: InstrumentWidgetStateType
 }
 export type InstrumentsStateType = Array<InstrumentStateType>
+const instruments:InstrumentsStateType = [
+  {
+    name: 'instrument 1',
+    edit_view: {
+      key: 'sequencer1',
+      type: 'sequencer',
+      nxOptions: {
+        size: [400,200],
+        mode: 'toggle',
+        rows: 5,
+        columns: 8
+      }
+    },
+    live_view: {
+      key: 'button1',
+      type: 'button',
+      nxOptions: {}
+    }
+  },
+  {
+    name: 'instrument 2',
+    edit_view: {
+      key: 'sequencer2',
+      type: 'sequencer',
+      nxOptions: {
+        size: [400,200],
+        mode: 'toggle',
+        rows: 5,
+        columns: 8
+      }
+    },
+    live_view: {
+      key: 'button2',
+      type: 'button',
+      nxOptions: {}
+    }
+  }
+]
 
 export type StateType = {
   channels: ChannelStateType
   nxInstances: {}
   instruments: InstrumentsStateType
+  viewType: 'edit' | 'live'
 }
-
-const instruments:InstrumentsStateType = [
-  {
-    name: 'default',
-    widgets: [
-      {
-        key: 'toggle1',
-        type: 'toggle',
-        nxOptions: {
-          state: true
-        }
-      },
-      {
-        key: 'toggle2',
-        type: 'toggle',
-        nxOptions: {
-          state: false
-        }
-      },
-      {
-        key: 'button1',
-        type: 'button',
-        nxOptions: {}
-      },
-      {
-        key: 'slider1',
-        type: 'slider',
-        nxOptions: {}
-      },
-      {
-        key: 'sequencer1',
-        type: 'sequencer',
-        nxOptions: {
-          size: [400,200],
-          mode: 'toggle',
-          rows: 5,
-          columns: 8
-        }
-      },
-    ]
-  },
-  {
-    name: 'test',
-    widgets: [
-      {
-        key: 'sequencer2',
-        type: 'sequencer',
-        nxOptions: {
-          size: [400,200],
-          mode: 'toggle',
-          rows: 5,
-          columns: 8
-        }
-      },
-    ]
-  }
-]
-
 const createState = (socket:Socket):StateType => (
   {
     channels: {
@@ -108,12 +89,13 @@ const createState = (socket:Socket):StateType => (
         channel: socket.channel(`channel:control`, {}),
         update: {
           elemKey: '',
-          elemState: 0 as NxBlankUpdateProp
+          elemState: 0
         }
       },
     },
     nxInstances: {},
-    instruments: instruments
+    instruments: instruments,
+    viewType: 'edit'
   }
 )
 
