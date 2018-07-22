@@ -1,193 +1,63 @@
 import { h } from "hyperapp"
-import { Button, Toggle, Sequencer, Slider } from 'NexusUI'
-
-import { sequenceLoop, env, osc }    from '../tone'
 import { ActionsType } from '../actions'
-import {
-  StateType,
-  InstrumentWidgetStateType,
-  NxButtonUpdate,
-  NxToggleUpdate,
-  NxSequencerUpdate,
-  NxSliderUpdate,
-  InstrumentStateType
-} from '../state'
+import { StateType } from '../state'
 
-const onUpdate = ({ state, key, callback }: { state:StateType, key:string, callback:Function}) => {
-  const { elemKey, elemState } = state.channels.control.update
-  if (key !== elemKey) return
-  const nxInstance = state.nxInstances[key]
-  callback({ nxInstance, elemState })
-}
+import { NxButton } from './nxButton'
+import { NxPosition } from './nxPosition'
+import { NxSequencer } from './nxSequencer'
+import { NxSlider } from './nxSlider'
+import { NxToggle } from './nxToggle'
 
-type NxElemProps = {
-  actions: ActionsType
-  key: string
-  nxOptions: {}
-  state: StateType
-}
-const NxButton = ({ actions, key, nxOptions, state }:NxElemProps) => (
-  <div
-    onupdate = { (elem) => {
-        onUpdate({
-          state,
-          key,
-          callback: ({ nxInstance, elemState }: { nxInstance:Button, elemState:NxButtonUpdate }) => {
-            nxInstance.position.x = elemState.x
-            nxInstance.position.y = elemState.y
-            nxInstance._state.flip(elemState.state)
-            nxInstance.render()
-            if (elemState.state) {
-              env.triggerAttack()
-            } else {
-              env.triggerRelease()
-            }
-          }
-        })
-    }}
-    oncreate={ (elem) => {
-        const instance = new Button(elem, nxOptions).on('change', (elemState) => {
-          actions.channels.pushChange({ elemKey: key, elemState })
-        })
-        actions.nxInstances.add({ key, instance })
-    } }>
-  </div>
-)
-
-const NxToggle = ({ actions, key, nxOptions, state }:NxElemProps) => (
-  <div
-    onupdate = { (elem) => {
-        onUpdate({
-          state,
-          key,
-          callback: ({ nxInstance, elemState }: { nxInstance:Toggle, elemState:NxToggleUpdate }) => {
-            nxInstance._state.flip(elemState)
-            nxInstance.render()
-          }
-        })
-    }}
-    oncreate = { (elem) => {
-        const instance = new Toggle(elem, nxOptions).on('change', (elemState) => {
-          actions.channels.pushChange({ elemKey: key, elemState })
-        })
-        actions.nxInstances.add({ key, instance })
-    } }>
-  </div>
-)
-
-const NxSequencer = ({ actions, key, nxOptions, state }:NxElemProps) => (
-  <div
-    onupdate = { (elem) => {
-        onUpdate({
-          state,
-          key,
-          callback: ({ nxInstance, elemState }: { nxInstance:Sequencer, elemState:NxSequencerUpdate }) => {
-            const { row, column } = elemState
-            nxInstance.matrix.pattern[row][column] = elemState.state
-            nxInstance.update()
-          }
-        })
-    }}
-    oncreate={ (elem) => {
-        const instance = new Sequencer(elem, nxOptions).on('change', (elemState) => {
-          actions.channels.pushChange({ elemKey: key, elemState })
-        })
-        sequenceLoop({ instance, nxOptions }).start()
-        actions.nxInstances.add({ key, instance })
-    } }>
-  </div>
-)
-
-const NxSlider = ({ actions, key, nxOptions, state }:NxElemProps) => (
-  <div
-    onupdate = { (elem) => {
-        onUpdate({
-          state,
-          key,
-          callback: ({ nxInstance, elemState }: { nxInstance:Slider, elemState:NxSliderUpdate }) => {
-            nxInstance._elemState.update(elemState)
-            nxInstance.position.elemState = nxInstance._elemState.normalized
-            nxInstance.render()
-            osc.frequency.elemState = elemState * 500
-          }
-        })
-    }}
-    oncreate={ (elem) => {
-        const instance = new Slider(elem, nxOptions).on('change', (elemState) => {
-          actions.channels.pushChange({ elemKey: key, elemState })
-        })
-        actions.nxInstances.add({ key, instance })
-    } }>
-  </div>
-)
-
-type BuildNxElemProps = {
-  actions: ActionsType
-  state:   StateType
-  widget:  InstrumentWidgetStateType
-}
-const nxElementFromType = ({ actions, state, widget }:BuildNxElemProps) => {
-  const { type, key, nxOptions } = widget
+const nxElementFromType = ({ actions, state, widget }) => {
+  const { type } = widget
   switch(type) {
     case 'button':
-      return NxButton({ state, key, actions, nxOptions })
+      return NxButton({ actions, state, widget })
     case 'sequencer':
-      return NxSequencer({ state, key, actions, nxOptions })
+      return NxSequencer({ actions, state, widget })
     case 'slider':
-      return NxSlider({ state, key, actions, nxOptions })
+      return NxSlider({ actions, state, widget })
     case 'toggle':
-      return NxToggle({ state, key, actions, nxOptions })
+      return NxToggle({ actions, state, widget })
+    case 'position':
+      return NxPosition({ actions, state, widget })
     default:
       throw `widget type ${type} not supported`
   }
 }
 
-type InstrumentTypeProps = {
-  actions: ActionsType
-  state:   StateType
-  widget:  InstrumentWidgetStateType
-  display: boolean
-}
-const InstrumentTypeView = ({ actions, state, widget, display }:InstrumentTypeProps) => (
-  <div style={{ display: display ? 'block' : 'none' }}>
-    { nxElementFromType({ actions, state, widget }) }
+const shouldDisplayView = ({ state, view }) => (
+  state.selectedInstrumentView === view.type
+)
+
+const InstrumentView = ({ actions, state, view }) => (
+  <div style={{ display: shouldDisplayView({ state, view }) ? 'block' : 'none' }}>
+    <div style={{ float: 'left' }}>
+      {view.widgetCtrls.map((widget) => (
+        nxElementFromType({ actions, state, widget })
+      ))}
+    </div>
+    <div style={{ float: 'left' }}>
+      {view.widgets.map((widget) => (
+        nxElementFromType({ actions, state, widget })
+      ))}
+    </div>
   </div>
 )
 
-type InstrumentProps = {
-  actions:    ActionsType
-  state:      StateType
-  instrument: InstrumentStateType
-}
-const Instrument = ({ actions, state, instrument }:InstrumentProps) => (
-  <fieldset>
-    <legend>
-      { instrument.name }
-    </legend>
-    {
-      InstrumentTypeView({
-        actions,
-        state,
-        widget: instrument.edit_view,
-        display: state.viewType == 'edit'
-      })
-    }
-    {
-      InstrumentTypeView({
-        actions,
-        state,
-        widget: instrument.live_view,
-        display: state.viewType == 'live'
-      })
-    }
-  </fieldset>
+const InstrumentViews = ({ actions, state, instrument }) => (
+  <div>
+    {instrument.views.map((view) => (
+      InstrumentView({ actions, state, view })
+    ))}
+  </div>
 )
 
 export const view = (state:StateType, actions:ActionsType) => (
   <div>
     {state.instruments.map((instrument) => {
       return [
-        Instrument({ actions, state, instrument }),
+        InstrumentViews({ actions, state, instrument }),
       ]
     })}
   </div>

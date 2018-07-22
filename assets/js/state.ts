@@ -13,7 +13,14 @@ export type NxSequencerUpdate = {
 }
 export type NxToggleUpdate = boolean
 export type NxBlankUpdateProp = 0
-export type NxUpdate = NxButtonUpdate | NxSliderUpdate | NxSequencerUpdate | NxToggleUpdate | NxBlankUpdateProp
+export type NxPositionUpdate = {
+  x:         number
+  y:         number
+  colIdx:    number
+  rowIdx:    number
+  cellState: boolean
+}
+export type NxUpdate = NxButtonUpdate | NxSliderUpdate | NxSequencerUpdate | NxToggleUpdate | NxBlankUpdateProp | NxPositionUpdate
 
 export type ChannelStateType = {
   [index:string]: {
@@ -28,59 +35,93 @@ export type ChannelStateType = {
 export type InstrumentWidgetStateType = {
   key: string
   type: string
+  sequencerReference?: {
+    key:    string
+    rowIdx: number
+  }
   nxOptions: {}
 }
-
-export type InstrumentStateType = {
-  name: string
-  edit_view: InstrumentWidgetStateType
-  live_view: InstrumentWidgetStateType
+export type InstrumentViewStateType = {
+  type: 'edit' | 'live' | 'fxTrigger'
+  widgets:     Array<InstrumentWidgetStateType>
+  widgetCtrls: Array<InstrumentWidgetStateType>
 }
+export type InstrumentStateType = {
+  views: Array<InstrumentViewStateType>
+}
+
 export type InstrumentsStateType = Array<InstrumentStateType>
 const instruments:InstrumentsStateType = [
   {
-    name: 'instrument 1',
-    edit_view: {
-      key: 'sequencer1',
-      type: 'sequencer',
-      nxOptions: {
-        size: [400,200],
-        mode: 'toggle',
-        rows: 5,
-        columns: 8
+    views: [
+      {
+        type: 'edit',
+        widgets: [
+          {
+            key: 'sequencer1',
+            type: 'sequencer',
+            nxOptions: {
+              size: [400,200],
+              mode: 'toggle',
+              rows: 8,
+              columns: 16
+            }
+          }
+        ],
+        widgetCtrls: [0,1,2,3,4,5,6,7].map((idx) => (
+          {
+            key: `toggle${idx}`,
+            type: 'toggle',
+            sequencerReference: {
+              key:    'sequencer1',
+              rowIdx: idx
+            },
+            nxOptions: {
+              size: [30, 25]
+            }
+          }
+        ))
+      }, {
+        type: 'live',
+        widgets: [0,1,2,3,4,5,6,7].map((idx) => (
+          {
+            key: `position${idx}`,
+            type: 'position',
+            sequencerReference: {
+              key:    'sequencer1',
+              rowIdx: idx
+            },
+            nxOptions: {
+              size: [50, 200]
+            }
+          }
+        )),
+        widgetCtrls: []
+      }, {
+        type: 'fxTrigger',
+        widgets: [
+          {
+            key: 'sequencer2',
+            type: 'sequencer',
+            nxOptions: {
+              size: [400,30],
+              mode: 'toggle',
+              rows: 1,
+              columns: 16
+            }
+          }
+        ],
+        widgetCtrls: []
       }
-    },
-    live_view: {
-      key: 'button1',
-      type: 'button',
-      nxOptions: {}
-    }
+    ]
   },
-  {
-    name: 'instrument 2',
-    edit_view: {
-      key: 'sequencer2',
-      type: 'sequencer',
-      nxOptions: {
-        size: [400,200],
-        mode: 'toggle',
-        rows: 5,
-        columns: 8
-      }
-    },
-    live_view: {
-      key: 'button2',
-      type: 'button',
-      nxOptions: {}
-    }
-  }
 ]
 
 export type StateType = {
   channels: ChannelStateType
   nxInstances: {}
   instruments: InstrumentsStateType
-  viewType: 'edit' | 'live'
+  selectedInstrumentView: 'edit' | 'live' | 'fxTrigger'
 }
 const createState = (socket:Socket):StateType => (
   {
@@ -95,7 +136,7 @@ const createState = (socket:Socket):StateType => (
     },
     nxInstances: {},
     instruments: instruments,
-    viewType: 'edit'
+    selectedInstrumentView: 'edit'
   }
 )
 

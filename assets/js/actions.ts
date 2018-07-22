@@ -43,7 +43,7 @@ export type ActionsType = {
   initTone: () => void
   channels: ChannelActionsType
   nxInstances: nxInstancesActionsType
-  toggleViewType: () => string
+  setInstrumentView: (selectedInstrumentView:string) => {}
 }
 const actions:hyperapp.ActionsType<StateType, ActionsType> = {
   initTone: ():void => {
@@ -99,10 +99,9 @@ const actions:hyperapp.ActionsType<StateType, ActionsType> = {
       { [key]: instance }
     )
   },
-  toggleViewType: () => (state:StateType) => {
-    const viewType = state.viewType == 'edit' ? 'live' : 'edit'
-    return { viewType }
-  }
+  setInstrumentView: (selectedInstrumentView:string) => (state:StateType) => {
+    return { selectedInstrumentView }
+  },
 };
 
 export {

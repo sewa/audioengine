@@ -26,11 +26,11 @@ synth3.triggerAttack("C4");
 const synth4 = new PluckSynth({ resonance: 0.9 }).toMaster();
 synth4.triggerAttackRelease("G2", "8n");
 
-const sequenceLoop = ({ instance, nxOptions }) => {
+const sequenceLoop = ({ actions, instance, nxOptions }) => {
   const seq = new Sequence((time, col) => {
     instance.next();
 
-    for (let i = 0; i < 4; i++){
+    for (let i = 0; i < instance.rows; i++){
       if (instance.matrix.pattern[i][col] === true){
         switch(i) {
         case 0:
@@ -48,20 +48,21 @@ const sequenceLoop = ({ instance, nxOptions }) => {
         };
       }
     }
-  }, [0, 1, 2, 3, 4, 5, 6, 7 ], "32n");
+  }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
   return seq;
 };
 
 const initTone = ({ timestamp, bpm, nowUnix }) => {
-  const interval_ms = 60000 / bpm;
-  const diff        = nowUnix - timestamp;
-  const error       = diff % interval_ms;
-  const offset      = interval_ms - error;
+  const intervalMs = 60000 / bpm
+  const diff       = nowUnix - timestamp
+  const error      = diff % intervalMs
+  const offset     = intervalMs - error
 
   window.setTimeout(() => {
-    Transport.bpm.value = bpm;
-    Transport.start();
-  }, offset);
+    console.log(offset)
+    Transport.bpm.value = bpm
+    Transport.start()
+  }, offset)
 };
 
 export {
