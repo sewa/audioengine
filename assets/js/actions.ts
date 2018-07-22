@@ -41,23 +41,44 @@ type nxInstancesActionsType = {
 
 export type ActionsType = {
   initTone: () => void
+  tone: {
+    effects: (key, effects) => {}
+  }
   channels: ChannelActionsType
   nxInstances: nxInstancesActionsType
   setInstrumentView: (selectedInstrumentView:string) => {}
 }
 const actions:hyperapp.ActionsType<StateType, ActionsType> = {
-  initTone: ():void => {
+  initTone: () => (state, actions) => {
     const ts = timesync_create({
       server: '/api/timesync',
       interval: null
-    });
+    })
     ts.sync()
     ts.on('sync', (args) => {
       get('clock').subscribe((xhr) => {
         const { timestamp, bpm } = xhr.response
         initTone({ timestamp, bpm, nowUnix: ts.now() })
-      });
-    });
+      })
+    })
+    // state.instruments.map((instrument) => (
+    //   instrument.views.map((view) => (
+    //     view.widgets.map((widget) => {
+    //       const { tone } = widget
+    //       if (tone && tone.samples) {
+    //         const effects = tone.samples.map((sample) => (
+    //           createEffects(widget)
+    //         ))
+    //         actions.tone.effects(widget.key, effects)
+    //       }
+    //     })
+    //   ))
+    // ))
+  },
+  tone: {
+    effects: (key, newEffects) => (state) => (
+      { effects: { [key]: newEffects } }
+    )
   },
   channels: {
     connect: name => (state:ChannelStateType, actions:ChannelActionsType):void => {

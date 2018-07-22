@@ -16,9 +16,19 @@ const onCreate = ({ actions, elem, widget: { key, nxOptions } }) => {
   actions.nxInstances.add({ key, instance })
 }
 
-export const NxToggle = ({ actions, state, widget }) => (
+const onClick = ({ actions, state, view: { widgetCtrls } }) => {
+  actions.setInstrumentView('fxTrigger')
+  widgetCtrls.forEach((widget) => {
+    const nxInstance = state.nxInstances[widget.key]
+    nxInstance._state.flip(false)
+    nxInstance.render()
+  })
+}
+
+export const NxToggle = ({ actions, state, view, widget }) => (
   <div
     onupdate = { (elem) => onUpdate({ state, widget })}
-    oncreate = { (elem) => onCreate({ actions, elem, widget }) }>
+    oncreate = { (elem) => onCreate({ actions, elem, widget }) }
+    onclick  = { (elem) => onClick({ actions, state, view } )}>
   </div>
 )

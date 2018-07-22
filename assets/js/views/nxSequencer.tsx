@@ -11,18 +11,22 @@ const onUpdate = ({ state, widget: { key } }) => {
   nxInstance.update()
 }
 
-const onCreate = ({ actions, elem, widget: { key, nxOptions } }) => {
+const onCreate = ({ actions, elem, state, widget }) => {
+  const { key, nxOptions } = widget
   const instance = new Sequencer(elem, nxOptions).on('change', (elemState) => {
     actions.channels.pushChange({ elemKey: key, elemState })
   })
-  const seq = sequenceLoop({ actions, instance, nxOptions })
-  seq.start()
+  sequenceLoop({
+    actions,
+    nxSequencer: instance,
+    widget
+  })
   actions.nxInstances.add({ key, instance })
 }
 
 export const NxSequencer = ({ actions, state, widget }) => (
   <div
     onupdate = { (elem) => onUpdate({ state, widget })}
-    oncreate = { (elem) => onCreate({ actions, elem, widget }) }>
+    oncreate = { (elem) => onCreate({ actions, elem, state, widget }) }>
   </div>
 )

@@ -6,7 +6,27 @@ import {
   OmniOscillator,
   AmplitudeEnvelope,
   Transport,
+  AutoFilter,
+  Phaser,
+  PitchShift,
+  Vibrato,
+  Chorus,
+  PingPongDelay,
+  BitCrusher,
+  Convolver
 } from 'Tone';
+
+const initTone = ({ timestamp, bpm, nowUnix }) => {
+  const intervalMs = 60000 / bpm
+  const diff       = nowUnix - timestamp
+  const error      = diff % intervalMs
+  const offset     = intervalMs - error
+
+  window.setTimeout(() => {
+    Transport.bpm.value = bpm
+    Transport.start()
+  }, offset)
+}
 
 const osc = new OmniOscillator("C#4", "pwm");
 const env = new AmplitudeEnvelope();
@@ -26,48 +46,37 @@ synth3.triggerAttack("C4");
 const synth4 = new PluckSynth({ resonance: 0.9 }).toMaster();
 synth4.triggerAttackRelease("G2", "8n");
 
-const sequenceLoop = ({ actions, instance, nxOptions }) => {
+const createEffects = (widget) => {
+  const { tone } = widget
+  if(tone && tone.samples) {
+    return tone.samples.map((sample) => (
+      [
+        new AutoFilter(8, 200, 3),
+        new Phaser(10, 3, 800),
+        new PitchShift(-3),
+        new Vibrato(10, 0.8),
+        new Chorus(10, 1, 0.8),
+        new PingPongDelay("16n", 0.6),
+        new BitCrusher(4),
+        new Convolver("./samples/ir/Terrys Warehouse 1_01.wav")
+      ]
+    ))
+  } else {
+    []
+  }
+}
+
+const sequenceLoop = ({ actions, nxSequencer, widget }) => {
   const seq = new Sequence((time, col) => {
-    instance.next();
-
-    for (let i = 0; i < instance.rows; i++){
-      if (instance.matrix.pattern[i][col] === true){
-        switch(i) {
-        case 0:
-          synth1.triggerAttackRelease("C4", "64n", time);
-          break;
-        case 1:
-          synth2.triggerAttackRelease("C2", "64n", time);
-          break;
-        case 2:
-          synth3.triggerAttackRelease("C4", "64n", time);
-          break;
-        case 3:
-          synth4.triggerAttackRelease("G2", "64n", time);
-          break;
-        };
-      }
-    }
+    nxSequencer.next();
   }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
-  return seq;
-};
-
-const initTone = ({ timestamp, bpm, nowUnix }) => {
-  const intervalMs = 60000 / bpm
-  const diff       = nowUnix - timestamp
-  const error      = diff % intervalMs
-  const offset     = intervalMs - error
-
-  window.setTimeout(() => {
-    console.log(offset)
-    Transport.bpm.value = bpm
-    Transport.start()
-  }, offset)
+  seq.start()
 };
 
 export {
   osc,
   env,
+  createEffects,
   sequenceLoop,
   initTone
 }

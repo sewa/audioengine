@@ -8,7 +8,7 @@ import { NxSequencer } from './nxSequencer'
 import { NxSlider } from './nxSlider'
 import { NxToggle } from './nxToggle'
 
-const nxElementFromType = ({ actions, state, widget }) => {
+const nxElementFromType = ({ actions, state, view, widget }) => {
   const { type } = widget
   switch(type) {
     case 'button':
@@ -18,7 +18,7 @@ const nxElementFromType = ({ actions, state, widget }) => {
     case 'slider':
       return NxSlider({ actions, state, widget })
     case 'toggle':
-      return NxToggle({ actions, state, widget })
+      return NxToggle({ actions, state, view, widget })
     case 'position':
       return NxPosition({ actions, state, widget })
     default:
@@ -30,16 +30,36 @@ const shouldDisplayView = ({ state, view }) => (
   state.selectedInstrumentView === view.type
 )
 
+const nxElementLabel = ({ widget: { label } }) => {
+  if (label) {
+    return (
+      <span class="badge badge-pill badge-info">
+        { label }
+      </span>
+    )
+  } else {
+    return ''
+  }
+}
+
+const nxElement = ({ actions, state, view, widget }) => (
+  // TODO: add a style property to each widget?
+  <div style={{ float: 'left', marginRight: '1px' }}>
+    { nxElementLabel({ widget }) }
+    { nxElementFromType({ actions, state, view, widget }) }
+  </div>
+)
+
 const InstrumentView = ({ actions, state, view }) => (
   <div style={{ display: shouldDisplayView({ state, view }) ? 'block' : 'none' }}>
     <div style={{ float: 'left' }}>
       {view.widgetCtrls.map((widget) => (
-        nxElementFromType({ actions, state, widget })
+        nxElementFromType({ actions, state, view, widget })
       ))}
     </div>
     <div style={{ float: 'left' }}>
       {view.widgets.map((widget) => (
-        nxElementFromType({ actions, state, widget })
+        nxElement({ actions, state, view, widget })
       ))}
     </div>
   </div>

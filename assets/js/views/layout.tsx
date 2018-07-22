@@ -10,7 +10,6 @@ export const view = (state:StateType, actions:ActionsType) => (
         <div class="btn-group-vertical">
           <button class="btn btn-outline-info pull-right" onclick={ () => actions.setInstrumentView('edit') }>Edit view</button>
           <button class="btn btn-outline-info pull-right" onclick={ () => actions.setInstrumentView('live') }>Live view</button>
-          <button class="btn btn-outline-info pull-right" onclick={ () => actions.setInstrumentView('fxTrigger') }>FX Trigger view</button>
         </div>
       </div>
       <div class="col-10">
