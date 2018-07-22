@@ -2,7 +2,7 @@ import { Channel } from 'phoenix'
 import { ActionResult } from 'hyperapp';
 import { create as timesync_create } from 'timesync'
 import { get } from './service';
-import { initTone } from './tone';
+import { startToneWithOffset, initSequence } from './tone';
 import { StateType, ChannelStateType, NxUpdate } from './state';
 
 type ChannelPushProps = {
@@ -41,12 +41,11 @@ type nxInstancesActionsType = {
 
 export type ActionsType = {
   initTone: () => void
-  tone: {
-    effects: (key, effects) => {}
-  }
   channels: ChannelActionsType
   nxInstances: nxInstancesActionsType
   setInstrumentView: (selectedInstrumentView:string) => {}
+  sequencerNext: (sequenceIdx:number) => {}
+  playStep: (players) => {}
 }
 const actions:hyperapp.ActionsType<StateType, ActionsType> = {
   initTone: () => (state, actions) => {
@@ -58,27 +57,11 @@ const actions:hyperapp.ActionsType<StateType, ActionsType> = {
     ts.on('sync', (args) => {
       get('clock').subscribe((xhr) => {
         const { timestamp, bpm } = xhr.response
-        initTone({ timestamp, bpm, nowUnix: ts.now() })
+        startToneWithOffset({ timestamp, bpm, nowUnix: ts.now() })
       })
     })
-    // state.instruments.map((instrument) => (
-    //   instrument.views.map((view) => (
-    //     view.widgets.map((widget) => {
-    //       const { tone } = widget
-    //       if (tone && tone.samples) {
-    //         const effects = tone.samples.map((sample) => (
-    //           createEffects(widget)
-    //         ))
-    //         actions.tone.effects(widget.key, effects)
-    //       }
-    //     })
-    //   ))
-    // ))
-  },
-  tone: {
-    effects: (key, newEffects) => (state) => (
-      { effects: { [key]: newEffects } }
-    )
+    const widget = state.instruments[0].views[0].widgets[0]
+    initSequence({ widget, actions, state })
   },
   channels: {
     connect: name => (state:ChannelStateType, actions:ChannelActionsType):void => {
@@ -120,11 +103,39 @@ const actions:hyperapp.ActionsType<StateType, ActionsType> = {
       { [key]: instance }
     )
   },
-  setInstrumentView: (selectedInstrumentView:string) => (state:StateType) => {
-    return { selectedInstrumentView }
+  setInstrumentView: (selectedInstrumentView:string) => (state:StateType) => (
+    { selectedInstrumentView }
+  ),
+  sequencerNext: () => (state:StateType) => {
+    Object.keys(state.nxInstances).forEach((key) => {
+      const instance = state.nxInstances[key]
+      if (instance.type === 'Sequencer') {
+        instance.next()
+      }
+    })
   },
+  playStep: ({ players, time, sequenceIdx }) => (state:StateType) => {
+    const instance = state.nxInstances['sequencer1']
+    for (var i = 0; i < instance.rows; i++) {
+      Object.keys(players[i].effects).forEach((key) => {
+        const sequencer = state.nxInstances[key]
+        const effect = players[i].effects[key]
+        if (sequencer.matrix.pattern[0][sequenceIdx] === true) {
+          effect.wet.exponentialRampTo(1, 0.01)
+        }else{
+          effect.wet.exponentialRampTo(0, 0.01)
+        }
+      })
+      if (instance.matrix.pattern[i][sequenceIdx] === true) {
+        const player   = players[i].player
+        const envelope = players[i].envelope
+        player.start(time)
+        envelope.triggerAttackRelease("4n", time, 1.0)
+      }
+    }
+  }
 };
 
 export {
   actions
-};
+}

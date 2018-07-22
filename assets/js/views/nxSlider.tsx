@@ -1,6 +1,5 @@
 import { h } from "hyperapp"
 import { Slider } from 'NexusUI'
-import { osc } from '../tone'
 
 const onUpdate = ({ state, widget: { key } }) => {
   const { elemKey, elemState } = state.channels.control.update
@@ -9,7 +8,6 @@ const onUpdate = ({ state, widget: { key } }) => {
   nxInstance._elemState.update(elemState)
   nxInstance.position.elemState = nxInstance._elemState.normalized
   nxInstance.render()
-  osc.frequency.elemState = elemState * 500
 }
 
 const onCreate = ({ actions, elem, widget: { key, nxOptions } }) => {

@@ -1,10 +1,8 @@
 import {
-  DuoSynth,
-  MembraneSynth,
-  PluckSynth,
-  Sequence,
-  OmniOscillator,
   AmplitudeEnvelope,
+  Master,
+  Player,
+  Sequence,
   Transport,
   AutoFilter,
   Phaser,
@@ -14,9 +12,9 @@ import {
   PingPongDelay,
   BitCrusher,
   Convolver
-} from 'Tone';
+} from 'Tone'
 
-const initTone = ({ timestamp, bpm, nowUnix }) => {
+const startToneWithOffset = ({ timestamp, bpm, nowUnix }) => {
   const intervalMs = 60000 / bpm
   const diff       = nowUnix - timestamp
   const error      = diff % intervalMs
@@ -28,55 +26,68 @@ const initTone = ({ timestamp, bpm, nowUnix }) => {
   }, offset)
 }
 
-const osc = new OmniOscillator("C#4", "pwm");
-const env = new AmplitudeEnvelope();
-osc.connect(env);
-env.toMaster();
-osc.start();
+const initSequence = ({ widget, actions, state }) => {
+  const players = createPlayers(widget)
+  const seq = new Sequence((time, sequenceIdx) => {
+    const { tone } = widget
+    if(tone && tone.samples) {
+      actions.playStep({ players, time, sequenceIdx })
+      actions.sequencerNext()
+    }
+  }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
+  seq.start()
+}
 
-const synth1 = new DuoSynth().toMaster();
-synth1.triggerAttackRelease("C4", "16n");
-
-const synth2 = new MembraneSynth().toMaster();
-synth2.triggerAttackRelease("C2", "8n");
-
-const synth3 = new PluckSynth().toMaster();
-synth3.triggerAttack("C4");
-
-const synth4 = new PluckSynth({ resonance: 0.9 }).toMaster();
-synth4.triggerAttackRelease("G2", "8n");
-
-const createEffects = (widget) => {
+const createPlayers = (widget) => {
   const { tone } = widget
   if(tone && tone.samples) {
-    return tone.samples.map((sample) => (
-      [
-        new AutoFilter(8, 200, 3),
-        new Phaser(10, 3, 800),
-        new PitchShift(-3),
-        new Vibrato(10, 0.8),
-        new Chorus(10, 1, 0.8),
-        new PingPongDelay("16n", 0.6),
-        new BitCrusher(4),
-        new Convolver("./samples/ir/Terrys Warehouse 1_01.wav")
-      ]
-    ))
+    return tone.samples.map((sample) => {
+      const autoFilter = new AutoFilter(8, 200, 3)
+      const phaser     = new Phaser(10, 3, 800)
+      const pitchShift = new PitchShift(-3)
+      const vibrato    = new Vibrato(10, 0.8)
+      const chorus     = new Chorus(10, 1, 0.8)
+      const pingPong   = new PingPongDelay("16n", 0.6)
+      const bitCrusher = new BitCrusher(4)
+      const convolver  = new Convolver("./samples/ir/Terrys Warehouse 1_01.wav")
+
+      const envelope = new AmplitudeEnvelope({
+        "attack": 0.1,
+        "decay": 0.2,
+        "sustain": 1.0,
+        "release": 0.1
+      }).chain(autoFilter, phaser, pitchShift, vibrato, chorus, pingPong, bitCrusher, convolver, Master)
+
+      const player = new Player({
+        url:          sample,
+        loop:         false,
+        retrigger:    true,
+        playbackRate: 1.0,
+        fadeIn:       0.005,
+        fadeOut:      0.005
+      }).connect(envelope)
+
+      return {
+        envelope,
+        player,
+        effects: {
+          filter: autoFilter,
+          delay: pingPong,
+          reverb: convolver,
+          distortion: bitCrusher,
+          pitch: pitchShift,
+          vibrato: vibrato,
+          chorus: chorus,
+          phaser: phaser
+        }
+      }
+    })
   } else {
     []
   }
 }
 
-const sequenceLoop = ({ actions, nxSequencer, widget }) => {
-  const seq = new Sequence((time, col) => {
-    nxSequencer.next();
-  }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
-  seq.start()
-};
-
 export {
-  osc,
-  env,
-  createEffects,
-  sequenceLoop,
-  initTone
+  startToneWithOffset,
+  initSequence
 }

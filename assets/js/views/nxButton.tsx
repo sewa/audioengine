@@ -1,6 +1,5 @@
 import { h } from "hyperapp"
 import { Button } from 'NexusUI'
-import { env } from '../tone'
 
 const onUpdate = ({ state, widget: { key } }) => {
   const { elemKey, elemState } = state.channels.control.update
@@ -10,11 +9,6 @@ const onUpdate = ({ state, widget: { key } }) => {
   nxInstance.position.y = elemState.y
   nxInstance._state.flip(elemState.state)
   nxInstance.render()
-  if (elemState.state) {
-    env.triggerAttack()
-  } else {
-    env.triggerRelease()
-  }
 }
 
 const onCreate = ({ actions, elem, widget: { key, nxOptions } }) => {

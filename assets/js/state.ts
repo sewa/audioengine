@@ -1,4 +1,3 @@
-import { Player } from 'tone'
 import { Channel, Socket } from 'phoenix'
 
 export type NxButtonUpdate = {
@@ -78,76 +77,20 @@ const instruments:InstrumentsStateType = [
             type: 'sequencer',
             tone: {
               samples: [
-                new Player({
-                  url:          "./samples/kit_2/1.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
-                new Player({
-                  url:          "./samples/kit_2/2.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
-                new Player({
-                  url:          "./samples/kit_2/3.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
-                new Player({
-                  url:          "./samples/kit_2/4.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
-                new Player({
-                  url:          "./samples/kit_2/5.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
-                new Player({
-                  url:          "./samples/kit_2/6.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
-                new Player({
-                  url:          "./samples/kit_2/7.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
-                new Player({
-                  url:          "./samples/kit_2/8.WAV",
-                  loop:         false,
-                  retrigger:    true,
-                  playbackRate: 1.0,
-                  fadeIn:       0.005,
-                  fadeOut:      0.005
-                }),
+                "./samples/kit_2/1.WAV",
+                "./samples/kit_2/2.WAV",
+                "./samples/kit_2/3.WAV",
+                "./samples/kit_2/4.WAV",
+                // "./samples/kit_2/5.WAV",
+                // "./samples/kit_2/6.WAV",
+                // "./samples/kit_2/7.WAV",
+                // "./samples/kit_2/8.WAV"
               ]
             },
             nxOptions: {
               size: [400,200],
               mode: 'toggle',
-              rows: 8,
+              rows: 4,
               columns: 16
             }
           }
@@ -208,9 +151,6 @@ const instruments:InstrumentsStateType = [
 export type StateType = {
   channels: ChannelStateType
   nxInstances: {}
-  tone: {
-    effects: {}
-  }
   instruments: InstrumentsStateType
   selectedInstrumentView: 'edit' | 'live' | 'fxTrigger'
 }
@@ -227,10 +167,7 @@ const createState = (socket:Socket):StateType => (
     },
     nxInstances: {},
     instruments: instruments,
-    selectedInstrumentView: 'edit',
-    tone: {
-      effects: {}
-    }
+    selectedInstrumentView: 'edit'
   }
 )
 
