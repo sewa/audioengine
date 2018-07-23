@@ -28,7 +28,7 @@ const EditView = (actions:Actions, state:State, instrument:InstrumentState) => {
         effectIdx={ i }
         nxOptions={
           {
-            size: [30, 25]
+            size: [30, 40]
           }
         }
       />

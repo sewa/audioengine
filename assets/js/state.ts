@@ -72,47 +72,6 @@ const instruments:InstrumentsState = [
       columns: 16
     }
   }
-  // {
-  //   views: {
-  //     edit: {
-  //     },
-  //     live: {
-  //       widgets: [0,1,2,3,4,5,6,7].map((idx) => (
-  //         {
-  //           key: `position${idx}`,
-  //           type: 'position',
-  //           sequencerReference: {
-  //             key:    'sequencer1',
-  //             rowIdx: idx
-  //           },
-  //           nxOptions: {
-  //             size: [50, 200]
-  //           }
-  //         }
-  //       )),
-  //       widgetCtrls: []
-  //     }, {
-  //       type: 'fxTrigger',
-  //       widgets: availableEffects.map((key, idx) => (
-  //         {
-  //           key: key,
-  //           label: key,
-  //           type: 'sequencer',
-  //           sequencerReference: {
-  //             key:    'sequencer1',
-  //             rowIdx: idx
-  //           },
-  //           nxOptions: {
-  //             size: [400,30],
-  //             mode: 'toggle',
-  //             rows: 1,
-  //             columns: 16
-  //           }
-  //         })),
-  //       widgetCtrls: []
-  //     }
-  //   ]
-  // },
 ]
 
 export type View = 'edit' | 'live' | 'fxTrigger'
