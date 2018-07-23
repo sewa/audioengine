@@ -26,10 +26,10 @@ const startToneWithOffset = ({ timestamp, bpm, nowUnix }) => {
   }, offset)
 }
 
-const initSequence = ({ widget, actions, state }) => {
-  const players = createPlayers(widget)
+const initSequence = ({ sequencer, actions, state }) => {
+  const players = createPlayers(sequencer)
   const seq = new Sequence((time, sequenceIdx) => {
-    const { tone } = widget
+    const { tone } = sequencer
     if(tone && tone.samples) {
       actions.playStep({ players, time, sequenceIdx })
       actions.sequencerNext()
@@ -38,8 +38,8 @@ const initSequence = ({ widget, actions, state }) => {
   seq.start()
 }
 
-const createPlayers = (widget) => {
-  const { tone } = widget
+const createPlayers = (sequencer) => {
+  const { tone } = sequencer
   if(tone && tone.samples) {
     return tone.samples.map((sample) => {
       const autoFilter = new AutoFilter(8, 200, 3)

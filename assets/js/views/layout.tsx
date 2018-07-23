@@ -1,9 +1,9 @@
 import { h } from "hyperapp"
 import { view as instrumentView } from './instrument'
-import { ActionsType } from '../actions'
-import { StateType } from '../state'
+import { Actions } from '../actions'
+import { State } from '../state'
 
-export const view = (state:StateType, actions:ActionsType) => (
+export const view = (state:State, actions:Actions) => (
   <div class="container" style={{ marginTop: '20px' }}>
     <div class="row">
       <div class="col-2">

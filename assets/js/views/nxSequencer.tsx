@@ -1,7 +1,22 @@
 import { h } from "hyperapp"
 import { Sequencer } from 'NexusUI'
 
-const onUpdate = ({ state, widget: { key } }) => {
+import { Actions } from "../actions";
+import {
+  State,
+  InstrumentSequencerState
+} from "../state";
+
+const nxOptions = (sequencer:InstrumentSequencerState) => (
+  {
+    size:    [400,200],
+    mode:    'toggle',
+    rows:    sequencer.samples.length,
+    columns: sequencer.columns
+  }
+)
+
+const onUpdate = ({ state, sequencer: { key } }) => {
   const { elemKey, elemState } = state.channels.control.update
   if (key !== elemKey) return
   const { row, column } = elemState
@@ -10,17 +25,17 @@ const onUpdate = ({ state, widget: { key } }) => {
   nxInstance.update()
 }
 
-const onCreate = ({ actions, elem, state, widget }) => {
-  const { key, nxOptions } = widget
-  const instance = new Sequencer(elem, nxOptions).on('change', (elemState) => {
+const onCreate = ({ actions, elem, state, sequencer }) => {
+  const { key } = sequencer
+  const instance = new Sequencer(elem, nxOptions(sequencer)).on('change', (elemState) => {
     actions.channels.pushChange({ elemKey: key, elemState })
   })
   actions.nxInstances.add({ key, instance })
 }
 
-export const NxSequencer = ({ actions, state, widget }) => (
+export const NxSequencer = ({ sequencer }) => (state:State, actions:Actions) => (
   <div
-    onupdate = { (elem) => onUpdate({ state, widget })}
-    oncreate = { (elem) => onCreate({ actions, elem, state, widget }) }>
+    onupdate = { (elem) => onUpdate({ state, sequencer })}
+    oncreate = { (elem) => onCreate({ actions, elem, state, sequencer }) }>
   </div>
 )

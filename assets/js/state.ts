@@ -22,7 +22,7 @@ export type NxPositionUpdate = {
 }
 export type NxUpdate = NxButtonUpdate | NxSliderUpdate | NxSequencerUpdate | NxToggleUpdate | NxBlankUpdateProp | NxPositionUpdate
 
-export type ChannelStateType = {
+export type ChannelState = {
   [index:string]: {
     channel: Channel
     update: {
@@ -32,28 +32,16 @@ export type ChannelStateType = {
   }
 }
 
-export type InstrumentWidgetStateType = {
-  key:    string
-  type:   string
-  label?: string
-  tone?:  {
-    samples: Array<any>
-  }
-  sequencerReference?: {
-    key:    string
-    rowIdx: number
-  }
-  nxOptions: {}
+export type InstrumentSequencerState = {
+  key: string
+  effects: Array<string>
+  samples: Array<string>
+  columns: number
 }
-export type InstrumentViewStateType = {
-  type: 'edit' | 'live' | 'fxTrigger'
-  widgets:     Array<InstrumentWidgetStateType>
-  widgetCtrls: Array<InstrumentWidgetStateType>
+export type InstrumentState = {
+  sequencer: InstrumentSequencerState
 }
-export type InstrumentStateType = {
-  views: Array<InstrumentViewStateType>
-}
-export type InstrumentsStateType = Array<InstrumentStateType>
+export type InstrumentsState = Array<InstrumentState>
 
 const availableEffects = [
   'filter',
@@ -66,95 +54,75 @@ const availableEffects = [
   'phaser'
 ]
 
-const instruments:InstrumentsStateType = [
+const instruments:InstrumentsState = [
   {
-    views: [
-      {
-        type: 'edit',
-        widgets: [
-          {
-            key: 'sequencer1',
-            type: 'sequencer',
-            tone: {
-              samples: [
-                "./samples/kit_2/1.WAV",
-                "./samples/kit_2/2.WAV",
-                "./samples/kit_2/3.WAV",
-                "./samples/kit_2/4.WAV",
-                // "./samples/kit_2/5.WAV",
-                // "./samples/kit_2/6.WAV",
-                // "./samples/kit_2/7.WAV",
-                // "./samples/kit_2/8.WAV"
-              ]
-            },
-            nxOptions: {
-              size: [400,200],
-              mode: 'toggle',
-              rows: 4,
-              columns: 16
-            }
-          }
-        ],
-        widgetCtrls: [0,1,2,3,4,5,6,7].map((idx) => (
-          {
-            key: `toggle${idx}`,
-            type: 'toggle',
-            sequencerReference: {
-              key:    'sequencer1',
-              rowIdx: idx
-            },
-            nxOptions: {
-              size: [30, 25]
-            }
-          }
-        ))
-      }, {
-        type: 'live',
-        widgets: [0,1,2,3,4,5,6,7].map((idx) => (
-          {
-            key: `position${idx}`,
-            type: 'position',
-            sequencerReference: {
-              key:    'sequencer1',
-              rowIdx: idx
-            },
-            nxOptions: {
-              size: [50, 200]
-            }
-          }
-        )),
-        widgetCtrls: []
-      }, {
-        type: 'fxTrigger',
-        widgets: availableEffects.map((key, idx) => (
-          {
-            key: key,
-            label: key,
-            type: 'sequencer',
-            sequencerReference: {
-              key:    'sequencer1',
-              rowIdx: idx
-            },
-            nxOptions: {
-              size: [400,30],
-              mode: 'toggle',
-              rows: 1,
-              columns: 16
-            }
-          })),
-        widgetCtrls: []
-      }
-    ]
-  },
+    sequencer: {
+      key: 'sequencer1',
+      effects: availableEffects,
+      samples: [
+        "./samples/kit_2/1.WAV",
+        "./samples/kit_2/2.WAV",
+        "./samples/kit_2/3.WAV",
+        "./samples/kit_2/4.WAV",
+        "./samples/kit_2/5.WAV",
+        // "./samples/kit_2/6.WAV",
+        // "./samples/kit_2/7.WAV",
+        // "./samples/kit_2/8.WAV"
+      ],
+      columns: 16
+    }
+  }
+  // {
+  //   views: {
+  //     edit: {
+  //     },
+  //     live: {
+  //       widgets: [0,1,2,3,4,5,6,7].map((idx) => (
+  //         {
+  //           key: `position${idx}`,
+  //           type: 'position',
+  //           sequencerReference: {
+  //             key:    'sequencer1',
+  //             rowIdx: idx
+  //           },
+  //           nxOptions: {
+  //             size: [50, 200]
+  //           }
+  //         }
+  //       )),
+  //       widgetCtrls: []
+  //     }, {
+  //       type: 'fxTrigger',
+  //       widgets: availableEffects.map((key, idx) => (
+  //         {
+  //           key: key,
+  //           label: key,
+  //           type: 'sequencer',
+  //           sequencerReference: {
+  //             key:    'sequencer1',
+  //             rowIdx: idx
+  //           },
+  //           nxOptions: {
+  //             size: [400,30],
+  //             mode: 'toggle',
+  //             rows: 1,
+  //             columns: 16
+  //           }
+  //         })),
+  //       widgetCtrls: []
+  //     }
+  //   ]
+  // },
 ]
 
-export type StateType = {
-  channels: ChannelStateType
+export type View = 'edit' | 'live' | 'fxTrigger'
+export type State = {
+  channels: ChannelState
   nxInstances: {}
-  instruments: InstrumentsStateType
-  selectedInstrumentView: 'edit' | 'live' | 'fxTrigger'
+  instruments: InstrumentsState
+  selectedInstrumentView: View
 }
-const createState = (socket:Socket):StateType => (
+const createState = (socket:Socket):State => (
   {
     channels: {
       control: {
