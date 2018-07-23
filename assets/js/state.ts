@@ -119,6 +119,7 @@ export type View = 'edit' | 'live' | 'fxTrigger'
 export type State = {
   channels: ChannelState
   nxInstances: {}
+  nxSequencer: Array<any>
   instruments: InstrumentsState
   selectedInstrumentView: View
   selectedEffectView: number
@@ -135,6 +136,7 @@ const createState = (socket:Socket):State => (
       },
     },
     nxInstances: {},
+    nxSequencer: [],
     instruments: instruments,
     selectedInstrumentView: 'edit',
     selectedEffectView: 0

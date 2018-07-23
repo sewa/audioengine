@@ -87,7 +87,7 @@ const EffectView = (actions:Actions, state:State, instrument:InstrumentState) =>
           { effect }
         </span>
         <NxSequencer
-          key={`${sequencer.key}-effect-${effect}`}
+          key={`${sequencer.key}-effect-${effect}-${i}`}
           nxOptions={
             {
               size:    [400,30],

@@ -43,6 +43,7 @@ export type Actions = {
   initTone: () => void
   channels: ChannelActions
   nxInstances: nxInstancesActions
+  addNxSequencer: (instance) => {}
   setInstrumentView: (selectedInstrumentView:string) => {}
   setEffectView: (selectedEffectView:number) => {}
   sequencerNext: (sequenceIdx:number) => {}
@@ -104,6 +105,9 @@ const actions:hyperapp.ActionsType<State, Actions> = {
       { [key]: instance }
     )
   },
+  addNxSequencer: (instance) => (state:State) => (
+    { nxSequencer: [...state.nxSequencer, instance] }
+  ),
   setInstrumentView: (selectedInstrumentView:string) => (state:State) => (
     { selectedInstrumentView }
   ),
@@ -111,18 +115,16 @@ const actions:hyperapp.ActionsType<State, Actions> = {
     { selectedEffectView }
   ),
   sequencerNext: () => (state:State) => {
-    Object.keys(state.nxInstances).forEach((key) => {
-      const instance = state.nxInstances[key]
-      if (instance.type === 'Sequencer') {
-        instance.next()
-      }
+    state.nxSequencer.forEach((instance) => {
+      instance.next()
     })
   },
   playStep: ({ players, time, sequenceIdx }) => (state:State) => {
-    const instance = state.nxInstances['sequencer1']
+    const sequencerKey = 'sequencer1'
+    const instance = state.nxInstances[sequencerKey]
     for (var i = 0; i < instance.rows; i++) {
       Object.keys(players[i].effects).forEach((key) => {
-        const sequencer = state.nxInstances[key]
+        const sequencer = state.nxInstances[`${sequencerKey}-effect-${key}-${i}`]
         const effect = players[i].effects[key]
         if (sequencer.matrix.pattern[0][sequenceIdx] === true) {
           effect.wet.exponentialRampTo(1, 0.01)

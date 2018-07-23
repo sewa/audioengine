@@ -18,6 +18,7 @@ const onCreate = ({ actions, elem, key, nxOptions, state, sequencer }) => {
     actions.channels.pushChange({ elemKey: key, elemState })
   })
   actions.nxInstances.add({ key, instance })
+  actions.addNxSequencer(instance)
 }
 
 export const NxSequencer = ({ key, nxOptions, sequencer }) => (state:State, actions:Actions) => (
