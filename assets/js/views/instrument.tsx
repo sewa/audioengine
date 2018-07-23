@@ -64,7 +64,7 @@ const LiveView = (actions:Actions, state:State, instrument:InstrumentState) => {
     buttons.push(
       <div style={{ float: 'left' }}>
         <NxPosition
-          key={`${sequencer.key}-toggle-${i}`}
+          key={`${sequencer.key}-live-${i}`}
           sequencer={sequencer} rowIdx={i}
         />
       </div>
