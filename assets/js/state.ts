@@ -121,6 +121,7 @@ export type State = {
   nxInstances: {}
   instruments: InstrumentsState
   selectedInstrumentView: View
+  selectedEffectView: number
 }
 const createState = (socket:Socket):State => (
   {
@@ -135,7 +136,8 @@ const createState = (socket:Socket):State => (
     },
     nxInstances: {},
     instruments: instruments,
-    selectedInstrumentView: 'edit'
+    selectedInstrumentView: 'edit',
+    selectedEffectView: 0
   }
 )
 

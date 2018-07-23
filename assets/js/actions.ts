@@ -44,6 +44,7 @@ export type Actions = {
   channels: ChannelActions
   nxInstances: nxInstancesActions
   setInstrumentView: (selectedInstrumentView:string) => {}
+  setEffectView: (selectedEffectView:number) => {}
   sequencerNext: (sequenceIdx:number) => {}
   playStep: (players) => {}
 }
@@ -105,6 +106,9 @@ const actions:hyperapp.ActionsType<State, Actions> = {
   },
   setInstrumentView: (selectedInstrumentView:string) => (state:State) => (
     { selectedInstrumentView }
+  ),
+  setEffectView: (selectedEffectView:number) => (state:State) => (
+    { selectedEffectView }
   ),
   sequencerNext: () => (state:State) => {
     Object.keys(state.nxInstances).forEach((key) => {

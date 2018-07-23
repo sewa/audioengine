@@ -4,13 +4,7 @@ import { Toggle } from 'NexusUI'
 import { Actions } from "../actions";
 import { State } from "../state";
 
-const nxOptions = () => (
-  {
-    size: [30, 25]
-  }
-)
-
-const onUpdate = ({ state, sequencer: { key } }) => {
+const onUpdate = ({ state, key }) => {
   const { elemKey, elemState } = state.channels.control.update
   if (key !== elemKey) return
   const nxInstance = state.nxInstances[key]
@@ -18,15 +12,16 @@ const onUpdate = ({ state, sequencer: { key } }) => {
   nxInstance.render()
 }
 
-const onCreate = ({ actions, elem, sequencer: { key } }) => {
-  const instance = new Toggle(elem, nxOptions()).on('change', (elemState) => {
+const onCreate = ({ actions, elem, key, nxOptions }) => {
+  const instance = new Toggle(elem, nxOptions).on('change', (elemState) => {
     actions.channels.pushChange({ elemKey: key, elemState })
   })
   actions.nxInstances.add({ key, instance })
 }
 
-const onClick = ({ actions, state }) => {
+const onClick = ({ actions, state, effectIdx }) => {
   actions.setInstrumentView('fxTrigger')
+  actions.setEffectView(effectIdx)
   /* widgetCtrls.forEach((widget) => {
    *   const nxInstance = state.nxInstances[widget.key]
    *   nxInstance._state.flip(false)
@@ -34,10 +29,10 @@ const onClick = ({ actions, state }) => {
    * }) */
 }
 
-export const NxToggle = ({ sequencer, key }) => (state:State, actions:Actions) => (
+export const NxToggle = ({ key, nxOptions, effectIdx }) => (state:State, actions:Actions) => (
   <div
-    onupdate = { (elem) => onUpdate({ state, sequencer })}
-    oncreate = { (elem) => onCreate({ actions, elem, sequencer }) }
-    onclick  = { (elem) => onClick({ actions, state } )}>
+    onupdate = { (elem) => onUpdate({ state, key })}
+    oncreate = { (elem) => onCreate({ actions, elem, key, nxOptions }) }
+    onclick  = { (elem) => onClick({ actions, state, effectIdx } )}>
   </div>
 )
