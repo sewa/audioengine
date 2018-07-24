@@ -32,21 +32,17 @@ export type ChannelState = {
   }
 }
 
-export type InstrumentSequencerState = {
+export type InstrumentState = {
   key: string
+  columns: number
   effects: Array<string>
   samples: Array<string>
-  columns: number
-}
-export type InstrumentState = {
-  sequencer: InstrumentSequencerState
 }
 export type InstrumentsState = Array<InstrumentState>
 
 const availableEffects = [
   'filter',
   'delay',
-  'reverb',
   'distortion',
   'pitch',
   'vibrato',
@@ -56,21 +52,19 @@ const availableEffects = [
 
 const instruments:InstrumentsState = [
   {
-    sequencer: {
-      key: 'sequencer1',
-      effects: availableEffects,
-      samples: [
-        "./samples/kit_1/1.wav",
-        "./samples/kit_1/2.wav",
-        "./samples/kit_3/5.wav",
-        "./samples/kit_1/3.wav",
-        //"./samples/kit_3/5.wav",
-        //"./samples/kit_2/5.wav",
-        // "./samples/kit_2/7.wav",
-        // "./samples/kit_2/8.wav"
-      ],
-      columns: 16
-    }
+    key: 'sequencer1',
+    effects: availableEffects,
+    samples: [
+      "./samples/kit_1/1.wav",
+      "./samples/kit_1/2.wav",
+      "./samples/kit_3/5.wav",
+      "./samples/kit_1/3.wav",
+      //"./samples/kit_3/5.wav",
+      //"./samples/kit_2/5.wav",
+      // "./samples/kit_2/7.wav",
+      // "./samples/kit_2/8.wav"
+    ],
+    columns: 16
   }
 ]
 

@@ -20,18 +20,18 @@ const colIndexFromTransportPosition = ():number => {
   return pos[1] * 4 + (Math.ceil(pos[2]) - 1)
 }
 
-const onUpdate = ({ state, sequencer, key, rowIdx }) => {
+const onUpdate = ({ state, instrument, key, rowIdx }) => {
   const { elemKey, elemState } = state.channels.control.update
   if (key !== elemKey) return
-  const nxInstance = state.nxInstances[`${sequencer.key}-live-${rowIdx}`]
+  const nxInstance = state.nxInstances[`${instrument.key}-live-${rowIdx}`]
   nxInstance._x.update(elemState.x)
   nxInstance._y.update(elemState.y)
   nxInstance.render()
-  const nxSequencer = state.nxInstances[sequencer.key]
+  const nxSequencer = state.nxInstances[instrument.key]
   nxSequencer.matrix.set.cell(elemState.colIdx, elemState.rowIdx, elemState.cellState)
 }
 
-const onCreate = ({ actions, elem, sequencer, key, rowIdx }) => {
+const onCreate = ({ actions, elem, key, rowIdx }) => {
   const instance = new Position(elem, nxOptions())
   instance.on('change', (elemState) => {
     const { x, y }  = elemState
@@ -60,9 +60,9 @@ const onCreate = ({ actions, elem, sequencer, key, rowIdx }) => {
   actions.nxInstances.add({ key, instance })
 }
 
-export const NxPosition = ({ sequencer, key, rowIdx }) => (state:State, actions:Actions) => (
+export const NxPosition = ({ instrument, key, rowIdx }) => (state:State, actions:Actions) => (
   <div style={{ float: 'left', marginRight: '1px' }}
-    onupdate = { (elem) => onUpdate({ state, sequencer, key, rowIdx })}
-    oncreate = { (elem) => onCreate({ actions, elem, sequencer, key, rowIdx }) }>
+    onupdate = { (elem) => onUpdate({ state, instrument, key, rowIdx })}
+    oncreate = { (elem) => onCreate({ actions, elem, key, rowIdx }) }>
   </div>
 )

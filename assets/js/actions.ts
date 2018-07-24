@@ -62,8 +62,8 @@ const actions:hyperapp.ActionsType<State, Actions> = {
         startToneWithOffset({ timestamp, bpm, nowUnix: ts.now() })
       })
     })
-    const sequencer = state.instruments[0].sequencer
-    initSequence({ sequencer, actions, state })
+    const instrument = state.instruments[0]
+    initSequence({ instrument, actions, state })
   },
   channels: {
     connect: name => (state:ChannelState, actions:ChannelActions):void => {

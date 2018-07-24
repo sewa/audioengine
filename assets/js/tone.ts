@@ -10,8 +10,7 @@ import {
   Vibrato,
   Chorus,
   PingPongDelay,
-  BitCrusher,
-  //Convolver
+  BitCrusher
 } from 'Tone'
 
 const startToneWithOffset = ({ timestamp, bpm, nowUnix }) => {
@@ -26,8 +25,8 @@ const startToneWithOffset = ({ timestamp, bpm, nowUnix }) => {
   }, offset)
 }
 
-const initSequence = ({ sequencer, actions, state }) => {
-  const players = createPlayers(sequencer)
+const initSequence = ({ instrument, actions, state }) => {
+  const players = createPlayers(instrument)
   const seq = new Sequence((time, sequenceIdx) => {
     actions.playStep({ players, time, sequenceIdx })
     actions.sequencerNext()
@@ -35,23 +34,46 @@ const initSequence = ({ sequencer, actions, state }) => {
   seq.start()
 }
 
-const createPlayers = (sequencer) => (
-  sequencer.samples.map((sample) => {
-    const autoFilter = new AutoFilter(8, 200, 3)
-    const phaser     = new Phaser(10, 3, 800)
-    const pitchShift = new PitchShift(-3)
-    const vibrato    = new Vibrato(10, 0.8)
-    const chorus     = new Chorus(10, 1, 0.8)
-    const pingPong   = new PingPongDelay("16n", 0.6)
-    const bitCrusher = new BitCrusher(4)
-    //const convolver  = new Convolver("./samples/impulse_response/1.wav")
+const createEffects = (effects:Array<string>):{ [effect:string]: any } => {
+  let ret = {}
+  effects.forEach((effect) => {
+    switch(effect) {
+      case 'filter':
+        ret[effect] = new AutoFilter(8, 200, 3)
+        break;
+      case 'delay':
+        ret[effect] = new PingPongDelay("16n", 0.6)
+        break;
+      case 'distortion':
+        ret[effect] = new BitCrusher(4)
+        break;
+      case 'pitch':
+        ret[effect] = new PitchShift(-3)
+        break;
+      case 'vibrato':
+        ret[effect] = new Vibrato(10, 0.8)
+        break;
+      case 'chorus':
+        ret[effect] = new Chorus(10, 1, 0.8)
+        break;
+      case 'phaser':
+        ret[effect] = new Phaser(10, 3, 800)
+        break;
+    }
+  })
+  return ret
+}
+
+const createPlayers = (instrument) => (
+  instrument.samples.map((sample) => {
+    const effects = createEffects(instrument.effects)
 
     const envelope = new AmplitudeEnvelope({
       "attack": 0.1,
       "decay": 0.2,
       "sustain": 1.0,
       "release": 0.1
-    }).chain(autoFilter, phaser, pitchShift, vibrato, chorus, pingPong, bitCrusher, Master)
+    }).chain(...Object.values(effects), Master)
 
     const player = new Player({
       url:          sample,
@@ -65,16 +87,7 @@ const createPlayers = (sequencer) => (
     return {
       envelope,
       player,
-      effects: {
-        filter: autoFilter,
-        delay: pingPong,
-        //reverb: convolver,
-        distortion: bitCrusher,
-        pitch: pitchShift,
-        vibrato: vibrato,
-        chorus: chorus,
-        phaser: phaser
-      }
+      effects: effects
     }
   })
 )
