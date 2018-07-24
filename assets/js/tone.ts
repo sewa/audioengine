@@ -44,7 +44,7 @@ const createPlayers = (sequencer) => (
     const chorus     = new Chorus(10, 1, 0.8)
     const pingPong   = new PingPongDelay("16n", 0.6)
     const bitCrusher = new BitCrusher(4)
-    //const convolver  = new Convolver("./samples/kit_0/1.wav")
+    //const convolver  = new Convolver("./samples/impulse_response/1.wav")
 
     const envelope = new AmplitudeEnvelope({
       "attack": 0.1,
