@@ -2,7 +2,6 @@ import { h } from "hyperapp"
 import { Actions } from '../actions'
 import {
   State,
-  /* View, */
   InstrumentState
 } from '../state'
 
