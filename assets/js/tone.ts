@@ -11,7 +11,7 @@ import {
   Chorus,
   PingPongDelay,
   BitCrusher,
-  Convolver
+  //Convolver
 } from 'Tone'
 
 const startToneWithOffset = ({ timestamp, bpm, nowUnix }) => {
@@ -44,14 +44,14 @@ const createPlayers = (sequencer) => (
     const chorus     = new Chorus(10, 1, 0.8)
     const pingPong   = new PingPongDelay("16n", 0.6)
     const bitCrusher = new BitCrusher(4)
-    const convolver  = new Convolver("./samples/ir/Terrys Warehouse 1_01.wav")
+    //const convolver  = new Convolver("./samples/kit_0/1.wav")
 
     const envelope = new AmplitudeEnvelope({
       "attack": 0.1,
       "decay": 0.2,
       "sustain": 1.0,
       "release": 0.1
-    }).chain(autoFilter, phaser, pitchShift, vibrato, chorus, pingPong, bitCrusher, convolver, Master)
+    }).chain(autoFilter, phaser, pitchShift, vibrato, chorus, pingPong, bitCrusher, Master)
 
     const player = new Player({
       url:          sample,
@@ -68,7 +68,7 @@ const createPlayers = (sequencer) => (
       effects: {
         filter: autoFilter,
         delay: pingPong,
-        reverb: convolver,
+        //reverb: convolver,
         distortion: bitCrusher,
         pitch: pitchShift,
         vibrato: vibrato,

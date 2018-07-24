@@ -135,7 +135,7 @@ const actions:hyperapp.ActionsType<State, Actions> = {
       if (instance.matrix.pattern[i][sequenceIdx] === true) {
         const player   = players[i].player
         const envelope = players[i].envelope
-        player.start(time)
+        player.start(time+0.1)
         envelope.triggerAttackRelease("4n", time, 0.5)
       }
     }

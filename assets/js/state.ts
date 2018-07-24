@@ -60,14 +60,14 @@ const instruments:InstrumentsState = [
       key: 'sequencer1',
       effects: availableEffects,
       samples: [
-        "./samples/kit_2/1.WAV",
-        "./samples/kit_2/2.WAV",
-        "./samples/kit_2/3.WAV",
-        "./samples/kit_2/4.WAV",
-        "./samples/kit_2/5.WAV",
-        // "./samples/kit_2/6.WAV",
-        // "./samples/kit_2/7.WAV",
-        // "./samples/kit_2/8.WAV"
+        "./samples/kit_1/1.wav",
+        "./samples/kit_1/2.wav",
+        "./samples/kit_3/5.wav",
+        "./samples/kit_1/3.wav",
+        //"./samples/kit_3/5.wav",
+        //"./samples/kit_2/5.wav",
+        // "./samples/kit_2/7.wav",
+        // "./samples/kit_2/8.wav"
       ],
       columns: 16
     }
