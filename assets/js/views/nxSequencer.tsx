@@ -24,7 +24,7 @@ const onCreate = ({ actions, elem, key, nxOptions, state }) => {
 }
 
 export const NxSequencer = ({ key, nxOptions }) => (state:State, actions:Actions) => (
-  <div
+  <div class = "float-left"
     onupdate = { (elem) => onUpdate({ state, key })}
     oncreate = { (elem) => onCreate({ actions, elem, key, nxOptions, state }) }>
   </div>

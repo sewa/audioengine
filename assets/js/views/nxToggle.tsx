@@ -1,5 +1,5 @@
 import { h } from "hyperapp"
-import { Toggle } from 'NexusUI'
+import { Button } from 'NexusUI'
 
 import { Actions } from "../actions";
 import { State } from "../state";
@@ -13,10 +13,11 @@ const onUpdate = ({ state, key }) => {
 }
 
 const onCreate = ({ actions, elem, key, nxOptions }) => {
-  const instance = new Toggle(elem, nxOptions).on('change', (elemState) => {
+  const instance = new Button(elem, nxOptions).on('change', (elemState) => {  
+    instance.mode = 'toggle'
     actions.channels.pushChange({ elemKey: key, elemState })
   })
-  instance.colorize("fill","#eee")
+  instance.colorize("fill","#333")
   actions.nxInstances.add({ key, instance })
 }
 

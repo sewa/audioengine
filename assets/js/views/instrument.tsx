@@ -20,7 +20,8 @@ const shouldDisplayEffect = (state:State, view:number) => (
   state.selectedEffectView === view
 )
 
-const sequencerCellSize = screen.width/20
+let maxWidth = Math.min(screen.width, 1000)
+const sequencerCellSize = maxWidth/20
 
 const sequencerWidth = (instrument:InstrumentState) => (
   instrument.columns * sequencerCellSize
@@ -47,9 +48,9 @@ const EditView = (actions:Actions, state:State, instrument:InstrumentState) => {
   }
   return (
     <div style={{ display: shouldDisplayView(state, 'edit') ? 'block' : 'none' }}>
-      <div style={{ float: 'left' }}>
-        { effectViewTrigger }
-      </div>
+      <div style={{ float: 'left' }}> { effectViewTrigger } </div>
+      <div style={{ float: 'left' }}> { effectViewTrigger } </div>
+      
       <div style={{ float: 'left' }}>
         <NxSequencer
           key={instrument.key}
@@ -65,6 +66,8 @@ const EditView = (actions:Actions, state:State, instrument:InstrumentState) => {
           }
         />
       </div>
+      <div style={{ float: 'left' }}> { effectViewTrigger } </div>
+      <div style={{ float: 'left' }}> { effectViewTrigger } </div>
     </div>
   )
 }
