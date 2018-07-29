@@ -16,6 +16,7 @@ const onCreate = ({ actions, elem, key, nxOptions }) => {
   const instance = new Toggle(elem, nxOptions).on('change', (elemState) => {
     actions.channels.pushChange({ elemKey: key, elemState })
   })
+  instance.colorize("fill","#eee")
   actions.nxInstances.add({ key, instance })
 }
 

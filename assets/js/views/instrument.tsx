@@ -9,6 +9,9 @@ import { NxPosition } from './nxPosition'
 import { NxSequencer } from './nxSequencer'
 import { NxToggle } from './nxToggle'
 
+var fillColor = "#ccc"
+var accentColor = "#FFDB00"
+
 const shouldDisplayView = (state:State, view:string) => (
   state.selectedInstrumentView === view
 )
@@ -17,7 +20,7 @@ const shouldDisplayEffect = (state:State, view:number) => (
   state.selectedEffectView === view
 )
 
-const sequencerCellSize = 35
+const sequencerCellSize = screen.width/20
 
 const sequencerWidth = (instrument:InstrumentState) => (
   instrument.columns * sequencerCellSize
@@ -55,7 +58,9 @@ const EditView = (actions:Actions, state:State, instrument:InstrumentState) => {
               size:    [sequencerWidth(instrument), sequencerHeight(instrument)],
               mode:    'toggle',
               rows:    instrument.samples.length,
-              columns: instrument.columns
+              columns: instrument.columns,
+              fillColor: fillColor,
+              accentColor: accentColor
             }
           }
         />
@@ -98,7 +103,9 @@ const EffectView = (actions:Actions, state:State, instrument:InstrumentState) =>
               size:    [sequencerWidth(instrument), sequencerCellSize],
               mode:    'toggle',
               rows:    1,
-              columns: instrument.columns
+              columns: instrument.columns,
+              fillColor: fillColor,
+              accentColor: accentColor
             }
           }
         />

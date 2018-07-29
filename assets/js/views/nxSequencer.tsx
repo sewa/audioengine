@@ -15,6 +15,8 @@ const onUpdate = ({ state, key }) => {
 
 const onCreate = ({ actions, elem, key, nxOptions, state }) => {
   const instance = new Sequencer(elem, nxOptions).on('change', (elemState) => {
+    instance.colorize("fill", nxOptions.fillColor)
+    instance.colorize("accent", nxOptions.accentColor)
     actions.channels.pushChange({ elemKey: key, elemState })
   })
   actions.nxInstances.add({ key, instance })
