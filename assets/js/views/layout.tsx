@@ -11,7 +11,7 @@ export const view = (state:State, actions:Actions) => (
         <div class="col-16">
         </div>
         <div class="col-4">
-          <div class="btn-group-horizontal">
+          <div class="btn-group-horizontal float-right  ">
             <button class="btn btn-outline-info pull-right" onclick={ () => actions.setInstrumentView('edit') }>Edit</button>
             <button class="btn btn-outline-info pull-right" onclick={ () => actions.setInstrumentView('live') }>Live</button>
           </div>

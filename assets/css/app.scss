@@ -15,9 +15,6 @@
 }
 
 .active{
-  -webkit-box-shadow: inset 0px 0px 21px 11px rgba(255,255,255,1);
-  -moz-box-shadow: inset 0px 0px 21px 11px rgba(255,255,255,1);
-  box-shadow: inset 0px 0px 21px 11px rgba(255,255,255,1);
 }
 
 .dark{ background-color: #333; }
@@ -25,7 +22,7 @@
 .float-left{ float: left; }
 .float-right{ float: right; }
 
-.row{
+.row.menu{
   margin-bottom: .25em;
 }
 
