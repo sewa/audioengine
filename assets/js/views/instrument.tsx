@@ -118,7 +118,7 @@ const EffectView = (actions:Actions, state:State, instrument:InstrumentState) =>
       </div>
     ))
     effects.push(
-      <div style={{ display: shouldDisplayEffect(state, i) ? 'block' : 'none' }}>
+      <div class='sequencer' style={{ display: shouldDisplayEffect(state, i) ? 'block' : 'none' }}>
         { sampleEffects }
       </div>
     )
