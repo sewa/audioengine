@@ -7,7 +7,8 @@ import {
 
 import { NxPosition } from './nxPosition'
 import { NxSequencer } from './nxSequencer'
-import { NxToggle } from './nxToggle'
+//import { NxToggle } from './nxToggle'
+import { NxButton } from './nxButton'
 
 var fillColor = "#ccc"
 var accentColor = "#FFDB00"
@@ -33,14 +34,16 @@ const sequencerHeight = (instrument:InstrumentState) => (
 
 const EditView = (actions:Actions, state:State, instrument:InstrumentState) => {
   let effectViewTrigger = []
+
   for(let i = 0; i < instrument.samples.length; i++) {
     effectViewTrigger.push(
-      <NxToggle
-        key={`${instrument.key}-toggle-${i}`}
+      <NxButton
+        key={'${instrument.key}-toggle-${i}'}
         effectIdx={ i }
         nxOptions={
           {
-            size: [sequencerCellSize, sequencerCellSize]
+            size: [sequencerCellSize, sequencerCellSize],
+            mode: 'toggle'
           }
         }
       />
@@ -51,7 +54,7 @@ const EditView = (actions:Actions, state:State, instrument:InstrumentState) => {
       <div style={{ float: 'left' }}> { effectViewTrigger } </div>
       <div style={{ float: 'left' }}> { effectViewTrigger } </div>
       
-      <div style={{ float: 'left' }}>
+      <div class='sequencer' style={{ float: 'left' }}>
         <NxSequencer
           key={instrument.key}
           nxOptions={

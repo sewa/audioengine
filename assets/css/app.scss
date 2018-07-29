@@ -55,5 +55,7 @@
       text-align: left;
       padding-top: .5em;
     }
+    .sequencer span:nth-child(4n+1){ opacity: .9; }
+    .sequencer span:nth-child(8n+1){ opacity: .8; }
   }
 }

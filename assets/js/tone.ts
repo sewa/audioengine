@@ -45,7 +45,7 @@ const createEffects = (effects:Array<string>):{ [effect:string]: any } => {
         ret[effect] = new PingPongDelay("16n", 0.6)
         break;
       case 'distortion':
-        ret[effect] = new BitCrusher(4)
+        ret[effect] = new BitCrusher(7)
         break;
       case 'pitch':
         ret[effect] = new PitchShift(-3)
