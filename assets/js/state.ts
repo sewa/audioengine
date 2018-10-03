@@ -54,16 +54,6 @@ export type State = {
   selectedEffectView: number
 }
 
-const availableEffects:Array<string> = [
-  'filter',
-  'delay',
-  'distortion',
-  'pitch',
-  'vibrato',
-  'chorus',
-  'phaser'
-]
-
 const createState = (socket:Socket):State => (
   {
     channels: {
@@ -77,23 +67,7 @@ const createState = (socket:Socket):State => (
     },
     nxInstances: {},
     nxSequencer: [],
-    instruments: [
-      {
-        key: 'sequencer1',
-        effects: availableEffects,
-        samples: [
-          "./samples/kit_1/1.wav",
-          "./samples/kit_1/2.wav",
-          "./samples/kit_3/5.wav",
-          "./samples/kit_1/3.wav",
-          //"./samples/kit_3/5.wav",
-          //"./samples/kit_2/5.wav",
-          // "./samples/kit_2/7.wav",
-          // "./samples/kit_2/8.wav"
-        ],
-        columns: 16
-      }
-    ],
+    instruments: [],
     selectedInstrumentView: 'edit',
     selectedEffectView: 0
   }

@@ -23,6 +23,7 @@ defmodule AudioengineWeb.Router do
   scope "/api", AudioengineWeb do
     pipe_through :api
 
+    get "/session", SessionController, :show
     get "/clock", ClockController, :clock
     post "/timesync", ClockController, :timesync
   end

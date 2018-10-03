@@ -1,13 +1,14 @@
 import { Channel } from 'phoenix'
 import { ActionResult } from 'hyperapp';
 import { create as timesync_create } from 'timesync'
-import { get } from './service';
+import { getAll } from './service';
 import { startToneWithOffset, initSequence } from './tone';
 import {
   State,
   ChannelState,
   NxUpdate,
-  InstrumentView
+  InstrumentView,
+  InstrumentsState
 } from './state';
 import { effectViewSequencerKey } from './helpers';
 
@@ -46,8 +47,9 @@ type nxInstancesActions = {
 }
 
 export type Actions = {
-  initTone: () => void
+  init: () => void
   channels: ChannelActions
+  setInstruments(instruments:InstrumentsState): InstrumentsState
   nxInstances: nxInstancesActions
   addNxSequencer: (instance) => {}
   setInstrumentView: (selectedInstrumentView:string) => {}
@@ -56,20 +58,28 @@ export type Actions = {
   playStep: (players) => {}
 }
 const actions:hyperapp.ActionsType<State, Actions> = {
-  initTone: () => (state, actions) => {
+  init: () => (state, actions) => {
     const ts = timesync_create({
       server: '/api/timesync',
       interval: null
     })
     ts.sync()
     ts.on('sync', (args) => {
-      get('clock').subscribe((xhr) => {
-        const { timestamp, bpm } = xhr.response
-        startToneWithOffset({ timestamp, bpm, nowUnix: ts.now() })
+      getAll(['clock', 'session']).subscribe((item) => {
+        const { endpoint, response } = item
+        switch(endpoint) {
+          case 'session':
+            actions.setInstruments(response.instruments)
+            const instrument = response.instruments[0]
+            initSequence({ instrument, actions, state })
+            break
+          case 'clock':
+            const { timestamp, bpm } = response
+            startToneWithOffset({ timestamp, bpm, nowUnix: ts.now() })
+            break
+        }
       })
     })
-    const instrument = state.instruments[0]
-    initSequence({ instrument, actions, state })
   },
   channels: {
     connect: name => (state:ChannelState, actions:ChannelActions):void => {
@@ -106,6 +116,9 @@ const actions:hyperapp.ActionsType<State, Actions> = {
       }
     )
   },
+  setInstruments: (instruments:InstrumentsState) => (
+    { instruments: instruments }
+  ),
   nxInstances: {
     add: ({ key, instance }) => (state:State) => (
       { [key]: instance }

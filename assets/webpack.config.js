@@ -17,6 +17,11 @@ const destDir = path.join(__dirname, "../priv/static");
 const publicPath = "/";
 
 module.exports = {
+  devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
+  },
   devtool: 'inline-source-map',
   mode: 'development',
   entry: [staticDir + "/js/app.ts", staticDir + "/css/app.scss"],
@@ -61,7 +66,8 @@ module.exports = {
     new ExtractTextPlugin("css/app.css"),
     new webpack.ProvidePlugin({
       Nexus: 'nexusui'
-    })
+    }),
+    new CopyWebpackPlugin([ { from: staticDir + "/samples", to: destDir + "/samples" } ])
     //   // We copy our images and fonts to the output folder
     //   new CopyWebpackPlugin([{ from: "./assets/images", to: "images" }])
   ]

@@ -10,7 +10,7 @@ socket.connect()
 
 const state = createState(socket)
 const main = app<State, Actions>(state, actions, view, document.body)
-main.initTone()
+main.init()
 main.channels.connect("control")
 
 // $(function(){
