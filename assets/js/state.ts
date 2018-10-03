@@ -20,7 +20,12 @@ export type NxPositionUpdate = {
   rowIdx:    number
   cellState: boolean
 }
-export type NxUpdate = NxButtonUpdate | NxSliderUpdate | NxSequencerUpdate | NxToggleUpdate | NxBlankUpdateProp | NxPositionUpdate
+export type NxUpdate = NxButtonUpdate |
+  NxSliderUpdate |
+  NxSequencerUpdate |
+  NxToggleUpdate |
+  NxBlankUpdateProp |
+  NxPositionUpdate
 
 export type ChannelState = {
   [index:string]: {
@@ -39,8 +44,17 @@ export type InstrumentState = {
   samples: Array<string>
 }
 export type InstrumentsState = Array<InstrumentState>
+export type InstrumentView = 'edit' | 'live' | 'fxTrigger'
+export type State = {
+  channels: ChannelState
+  nxInstances: {}
+  nxSequencer: Array<any>
+  instruments: InstrumentsState
+  selectedInstrumentView: InstrumentView
+  selectedEffectView: number
+}
 
-const availableEffects = [
+const availableEffects:Array<string> = [
   'filter',
   'delay',
   'distortion',
@@ -50,33 +64,6 @@ const availableEffects = [
   'phaser'
 ]
 
-const instruments:InstrumentsState = [
-  {
-    key: 'sequencer1',
-    effects: availableEffects,
-    samples: [
-      "./samples/kit_1/1.wav",
-      "./samples/kit_1/2.wav",
-      "./samples/kit_3/5.wav",
-      "./samples/kit_1/3.wav",
-      //"./samples/kit_3/5.wav",
-      //"./samples/kit_2/5.wav",
-      // "./samples/kit_2/7.wav",
-      // "./samples/kit_2/8.wav"
-    ],
-    columns: 16
-  }
-]
-
-export type View = 'edit' | 'live' | 'fxTrigger'
-export type State = {
-  channels: ChannelState
-  nxInstances: {}
-  nxSequencer: Array<any>
-  instruments: InstrumentsState
-  selectedInstrumentView: View
-  selectedEffectView: number
-}
 const createState = (socket:Socket):State => (
   {
     channels: {
@@ -90,7 +77,23 @@ const createState = (socket:Socket):State => (
     },
     nxInstances: {},
     nxSequencer: [],
-    instruments: instruments,
+    instruments: [
+      {
+        key: 'sequencer1',
+        effects: availableEffects,
+        samples: [
+          "./samples/kit_1/1.wav",
+          "./samples/kit_1/2.wav",
+          "./samples/kit_3/5.wav",
+          "./samples/kit_1/3.wav",
+          //"./samples/kit_3/5.wav",
+          //"./samples/kit_2/5.wav",
+          // "./samples/kit_2/7.wav",
+          // "./samples/kit_2/8.wav"
+        ],
+        columns: 16
+      }
+    ],
     selectedInstrumentView: 'edit',
     selectedEffectView: 0
   }

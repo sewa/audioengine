@@ -3,7 +3,13 @@ import { ActionResult } from 'hyperapp';
 import { create as timesync_create } from 'timesync'
 import { get } from './service';
 import { startToneWithOffset, initSequence } from './tone';
-import { State, ChannelState, NxUpdate } from './state';
+import {
+  State,
+  ChannelState,
+  NxUpdate,
+  InstrumentView
+} from './state';
+import { effectViewSequencerKey } from './helpers';
 
 type ChannelPushProps = {
   elemKey: string
@@ -108,7 +114,7 @@ const actions:hyperapp.ActionsType<State, Actions> = {
   addNxSequencer: (instance) => (state:State) => (
     { nxSequencer: [...state.nxSequencer, instance] }
   ),
-  setInstrumentView: (selectedInstrumentView:string) => (state:State) => (
+  setInstrumentView: (selectedInstrumentView:InstrumentView) => (state:State) => (
     { selectedInstrumentView }
   ),
   setEffectView: (selectedEffectView:number) => (state:State) => (
@@ -124,7 +130,7 @@ const actions:hyperapp.ActionsType<State, Actions> = {
     const instance = state.nxInstances[sequencerKey]
     for (var i = 0; i < instance.rows; i++) {
       Object.keys(players[i].effects).forEach((key) => {
-        const sequencer = state.nxInstances[`${sequencerKey}-effect-${key}-${i}`]
+        const sequencer = state.nxInstances[effectViewSequencerKey(sequencerKey, key, i)]
         const effect = players[i].effects[key]
         if (sequencer.matrix.pattern[0][sequenceIdx] === true) {
           effect.wet.exponentialRampTo(1, 0.01)
@@ -140,7 +146,7 @@ const actions:hyperapp.ActionsType<State, Actions> = {
       }
     }
   }
-};
+}
 
 export {
   actions

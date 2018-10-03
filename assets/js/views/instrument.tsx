@@ -5,40 +5,42 @@ import {
   InstrumentState
 } from '../state'
 
+import {
+  shouldDisplayView,
+  shouldDisplayEffect,
+  sequencerCellSize,
+  sequencerHeight,
+  sequencerWidth,
+  effectViewTriggerKey,
+  liveViewTriggerKey,
+  effectViewSequencerKey
+} from '../helpers'
+
 import { NxPosition } from './nxPosition'
 import { NxSequencer } from './nxSequencer'
 import { NxToggle } from './nxToggle'
-
-const shouldDisplayView = (state:State, view:string) => (
-  state.selectedInstrumentView === view
-)
-
-const shouldDisplayEffect = (state:State, view:number) => (
-  state.selectedEffectView === view
-)
-
-const sequencerCellSize = 35
-
-const sequencerWidth = (instrument:InstrumentState) => (
-  instrument.columns * sequencerCellSize
-)
-
-const sequencerHeight = (instrument:InstrumentState) => (
-  instrument.samples.length * sequencerCellSize
-)
 
 const EditView = (actions:Actions, state:State, instrument:InstrumentState) => {
   let effectViewTrigger = []
   for(let i = 0; i < instrument.samples.length; i++) {
     effectViewTrigger.push(
       <NxToggle
-        key={`${instrument.key}-toggle-${i}`}
+        key={ effectViewTriggerKey(instrument.key, i) }
         effectIdx={ i }
         nxOptions={
           {
             size: [sequencerCellSize, sequencerCellSize]
           }
         }
+        onClick={() => {
+            actions.setInstrumentView('fxTrigger')
+            actions.setEffectView(i)
+            /* widgetCtrls.forEach((widget) => {
+             *   const nxInstance = state.nxInstances[widget.key]
+             *   nxInstance._state.flip(false)
+             *   nxInstance.render()
+             * }) */
+        }}
       />
     )
   }
@@ -70,7 +72,7 @@ const LiveView = (actions:Actions, state:State, instrument:InstrumentState) => {
     buttons.push(
       <div style={{ float: 'left' }}>
         <NxPosition
-          key={`${instrument.key}-live-${i}`}
+          key={ liveViewTriggerKey(instrument.key, i) }
           instrument={instrument} rowIdx={i}
         />
       </div>
@@ -92,7 +94,7 @@ const EffectView = (actions:Actions, state:State, instrument:InstrumentState) =>
           { effect }
         </span>
         <NxSequencer
-          key={`${instrument.key}-effect-${effect}-${i}`}
+          key={ effectViewSequencerKey(instrument.key, effect, i) }
           nxOptions={
             {
               size:    [sequencerWidth(instrument), sequencerCellSize],
